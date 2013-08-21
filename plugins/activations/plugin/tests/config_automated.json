@@ -1,0 +1,53 @@
+[
+	{
+		"patterns": [
+			"http://ops.trigger.io/75d92dce/tests/empty.html"
+		],
+		"run_at": "start",
+		"scripts": [
+			"/js/jquery-1.7.2.min.js",
+			"/js/qunit-1.10.0.js",
+			"/tests/core.js",
+			"/tests/geolocation.js",
+			"/tests/notification.js",
+			"/tests/prefs.js",
+			"/tests/request.js",
+			"/fixtures/activations/test_result_client.js",
+			"/fixtures/activations/activation.js"
+		],
+		"styles": []
+	},
+	{
+		"all_frames": true,
+		"patterns": [
+			"http://ops.trigger.io/75d92dce/tests/*"
+		],
+		"run_at": "start",
+		"scripts": [
+			"/js/jquery-1.7.2.min.js",
+			"/fixtures/activations/setvar1.js"
+		],
+		"styles": []
+	},
+	{
+		"patterns": [
+			"http://ops.trigger.io/75d92dce/tests/*"
+		],
+		"run_at": "start",
+		"scripts": [
+			"/js/jquery-1.7.2.min.js",
+			"/fixtures/activations/setvar2.js"
+		],
+		"styles": []
+	},
+	{
+		"all_frames": true,
+		"patterns": [
+			"file:///*/*"
+		],
+		"run_at": "start",
+		"scripts": [],
+		"styles": []
+	}
+]
+

@@ -1,0 +1,57 @@
+{
+	"required": true,
+	"type": "object",
+	"description": "Load styles and scripts into websites accessed by the user based on match patterns.",
+	"_docs": "http://docs.trigger.io/en/v1.4/modules/activations.html",
+	"properties": {
+		"activations": {
+			"required": true,
+			"type": "array",
+			"description": "Activation declarations",
+			"items": {
+				"type": "object", 
+				"description": "an individual activation declaration", 
+				"properties": {
+					"patterns": {
+						"required": true, 
+						"type": "array", 
+						"description": "Match patterns, defining URLs to activate on.",
+						"items": {
+							"type": "string"
+						}
+					}, 
+					"scripts": {
+						"required": true, 
+						"type": "array", 
+						"description": "JavaScript files to embed.",
+						"items": {
+							"type": "string",
+							"_filepicker": true
+						}
+					}, 
+					"styles": {
+						"required": true, 
+						"type": "array", 
+						"description": "CSS files to embed.",
+						"items": {
+							"type": "string",
+							"_filepicker": true
+						}
+					},
+					"run_at": {
+						"required": false,
+						"type": "string",
+						"description": "When the activated scripts should be run.",
+						"enum": ["start", "ready", "end"]
+					},
+					"all_frames": {
+						"required": false,
+						"type": "boolean",
+						"description": "Whether or not the activation will run on all frames on the page."
+					}
+				}
+			}
+		}
+	}
+}
+

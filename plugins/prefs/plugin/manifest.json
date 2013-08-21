@@ -1,0 +1,7 @@
+{
+    "description": "My plugin template", 
+    "name": "prefs", 
+    "platform_version": "feature_plugin_js", 
+    "uuid": "d4f15420617511e2be6f123139286d0c", 
+    "version": "0.1"
+}

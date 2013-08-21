@@ -1,0 +1,19 @@
+{
+	"chrome": {
+        "128": "fixtures/icons/icon128.png",
+        "48": "fixtures/icons/icon48.png",
+        "16": "fixtures/icons/icon16.png"
+    },
+    "firefox": {
+        "32": "fixtures/icons/icon32.png",
+        "64": "fixtures/icons/icon64.png"
+    },
+    "safari": {
+        "32": "fixtures/icons/icon32.png",
+        "64": "fixtures/icons/icon64.png",
+        "48": "fixtures/icons/icon48.png"
+    },
+    "ie": {
+        "16": "fixtures/icons/icon16.ico"
+    }
+}

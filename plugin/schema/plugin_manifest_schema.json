@@ -1,0 +1,26 @@
+{
+	"description": "Plugin manifest",
+	"properties": {
+		"uuid": {
+			"required": true,
+			"type": "string"
+		},
+		"name": {
+			"required": true,
+			"type": "string"
+		},
+		"description": {
+			"required": true,
+			"type": "string"
+		},
+		"version": {
+			"required": true,
+			"type": "string"
+		},
+		"platform_version": {
+			"required": true,
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+}

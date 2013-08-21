@@ -1,0 +1,6 @@
+{
+	"required": false,
+	"type": "object",
+	"_docs": "http://docs.trigger.io/en/v1.4/modules/parameters.html",
+	"description": "Arbitrary extra configuration which will be available as forge.config.modules.parameters in your JavaScript."
+}

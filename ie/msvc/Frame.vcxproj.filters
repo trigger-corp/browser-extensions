@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\source\proxy\Channel.cpp" />
+    <ClCompile Include="..\source\proxy\dllmain.cpp" />
+    <ClCompile Include="..\source\proxy\FrameProxy.cpp" />
+    <ClCompile Include="..\source\proxy\FrameServer.cpp" />
+    <ClCompile Include="..\source\proxy\stdafx.cpp" />
+    <ClCompile Include="..\source\Logger.cpp" />
+    <ClCompile Include="..\build\generated\Forge_i.c">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\proxy\Commands.cpp" />
+    <ClCompile Include="..\source\WindowsMessage.cpp" />
+    <ClCompile Include="..\source\ScriptExtensions.cpp" />
+    <ClCompile Include="..\external\json_spirit\json_spirit_reader.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\json_spirit\json_spirit_value.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\json_spirit\json_spirit_writer.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\source\proxy\stdafx.h" />
+    <ClInclude Include="..\source\proxy\Channel.h" />
+    <ClInclude Include="..\source\proxy\FrameProxy.h" />
+    <ClInclude Include="..\source\proxy\FrameServer.h" />
+    <ClInclude Include="..\source\Logger.h" />
+    <ClInclude Include="..\source\util.h" />
+    <ClInclude Include="..\build\generated\Forge_i.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\proxy\Commands.h" />
+    <ClInclude Include="..\source\WindowsMessage.h" />
+    <ClInclude Include="..\source\ScriptExtensions.h" />
+    <ClInclude Include="..\external\json_spirit\json_spirit.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_reader.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_value.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_writer.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{43e0fd50-b942-4469-8d69-57fa697e82d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json_spirit">
+      <UniqueIdentifier>{d170c5c5-95b3-4339-bfc6-977d090bf0c7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

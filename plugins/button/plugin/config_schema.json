@@ -1,0 +1,45 @@
+{
+	"type": "object", 
+	"properties": {
+		"default_icons": {
+			"required": false, 
+			"type": "object",
+			"properties": {
+				"ie": {
+					"required": false, 
+					"type": "string",
+					"_filepicker": true
+				}, 
+				"chrome": {
+					"required": false, 
+					"type": "string",
+					"_filepicker": true
+				}, 
+				"firefox": {
+					"required": false, 
+					"type": "string",
+					"_filepicker": true
+				}, 
+				"safari": {
+					"required": false, 
+					"type": "string",
+					"_filepicker": true
+				}
+			}
+		}, 
+		"default_title": {
+			"required": false, 
+			"type": "string"
+		}, 
+		"default_icon": {
+			"required": false, 
+			"type": "string",
+			"_filepicker": true
+		}, 
+		"default_popup": {
+			"required": false, 
+			"type": "string",
+			"_filepicker": true
+		}
+	}
+}

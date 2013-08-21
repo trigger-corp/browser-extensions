@@ -1,0 +1,7 @@
+{
+    "description": "My plugin template", 
+    "name": "geolocation", 
+    "platform_version": "feature_modules_as_plugins", 
+    "uuid": "c1abed3565ea11e293f80800273373f9", 
+    "version": "0.1"
+}

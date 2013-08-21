@@ -1,0 +1,7 @@
+{
+    "description": "My plugin template", 
+    "name": "request", 
+    "platform_version": "feature_modules_as_plugins", 
+    "uuid": "4606ff6366e511e2bc060800273373f9", 
+    "version": "0.1"
+}

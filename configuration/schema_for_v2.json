@@ -1,0 +1,147 @@
+{
+	"description": "Forge app generation configuration",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"config_version": {
+			"required": true,
+			"type": "string",
+			"description": "An internal reference to the version of the layout of this config file, you should not need to change this manually",
+			"_hide": true
+		},
+		"name": {
+			"required": true,
+			"type": "string",
+			"description": "The display name of your app as it will be seen by the user.",
+			"_order": 1
+		},
+		"author": {
+			"required": true,
+			"type": "string",
+			"_order": 3
+		},
+		"description": {
+			"required": false,
+			"type": "string",
+			"_order": 2
+		},
+		"platform_version": {
+			"required": true, 
+			"type": "string", 
+			"description": "The Forge platform level this application should be built against, most of the time you will not need to manually change this option.",
+			"_order": 6
+		},
+		"version": {
+			"required": true,
+			"type": "string",
+			"description": "The version number for your app, consisting of up to 3 . separated integers, i.e. \"1.3.32\".",
+			"pattern": "^\\d{,5}(\\.\\d{,5})?(\\.\\d{,5})?$",
+			"_order": 4
+		},
+		"homepage": {
+			"required": false,
+			"type": "string",
+			"description": "Your website, or location of more information about this app.",
+			"_order": 5
+		},
+		"core": {
+			"required": false,
+			"type": "object",
+			"properties": {
+				"general": {
+					"required": false,
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"reload": {
+							"type": "boolean",
+							"required": false
+						},
+						"trusted_urls": {
+							"type": "array",
+							"required": false
+						}
+					}
+				},
+				"safari": {
+					"required": false,
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"package_name": {
+							"type": "string",
+							"required": false
+						}
+					}
+				},
+				"chrome": {
+					"required": false,
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"content_security_policy": {
+							"required": false,
+							"type": "string"
+						},
+						"web_accessible_resources": {
+							"required": false,
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"firefox": {
+					"required": false,
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"package_name": {
+							"type": "string",
+							"required": false
+						}
+					}
+				}
+			},
+			"additionalProperties": false,
+			"_order": 6
+		},
+		"plugins": {
+			"required": false,
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"hash": {
+						"type": "string",
+						"required": true
+					},
+					"type": {
+						"type": "string",
+						"required": false,
+						"enum": ["external", "project"]
+					},
+					"config": {
+						"type": "object",
+						"required": false
+					}
+				}
+			}
+		},
+		"logging": {},
+		"uuid": {},
+		"config_hash": {},
+		"plugin_url_prefix": {},
+		"modules": {
+			"type": "object",
+			"required": false,
+			"additionalProperties": false,
+			"properties": {
+				"parameters": {
+					"required": false
+				}
+			}
+		}
+	}
+}

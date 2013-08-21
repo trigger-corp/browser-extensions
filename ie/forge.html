@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <style>
+            html {
+              font-family : Helvetica, Verdana, Arial, sans-serif;
+            }
+            body {
+              margin  : 0px;
+              padding : 0px;
+            };
+            h2 {
+              margin    : 0px;
+              padding   : 0px;
+              font-size : 25px;
+            };
+            div#content {
+              position   : absolute;
+              height     : 100%;
+              width      : 100%;
+              top        : 0px;
+              left       : 0px;
+              overflow   : none;
+            }
+            div#wrapper_top {
+              height     : 95px;
+              background : #ccc;
+            }
+            .left {
+              float  : left;
+              width  : 48%;
+            }
+            .right {
+              float : right;
+              width : 48%;
+            }
+            div#forgescripts, div#forgeembeds {
+              height        : 70px;
+              word-wrap     : break-word;
+              overflow      : auto;
+              font-family   : "Courier New", fixed, monospace;
+              font-size     : 10pt;
+            }
+            div#shadow {
+              clear      : both;
+              background : darkgrey;
+              height     : 5px;
+              font-size  : 0px;
+            }
+            div#wrapper_bottom {
+              overflow   : auto;
+              height     : expression((document.body.clientHeight - 100) + 'px');
+              background : white;
+            }
+            div#forgeconsole {
+              word-wrap   : break-word;
+              font-family : "Courier New", fixed, monospace;
+              font-size   : 10pt;
+            }
+        </style>
+		<script type="text/javascript" src="forge/app_config.js"></script>
+        <script type="text/javascript" src="forge/all-priv.js"></script>
+		{% if defined("plugins") and "background" in plugins and "config" in plugins["background"] and "files" in plugins["background"]["config"] %}\
+            {% for bg_file in plugins["background"]["config"]["files"] %}\
+	        {% if bg_file.startswith('http://') or bg_file.startswith('https://') %}\
+		    <script type="text/javascript" src="${bg_file}"></script>
+	        {% end %}
+	        {% if not bg_file.startswith('/') and not bg_file.startswith('http://') and not bg_file.startswith('https://') %}\
+		    <script type="text/javascript" src="src/${bg_file}"></script>
+	        {% end %}
+	        {% if bg_file.startswith('/') %}\
+		    <script type="text/javascript" src="src${bg_file}"></script>
+	        {% end %}
+            {% end %}
+		{% end %}
+            <script>
+                function clear_console() {
+                    var forgeconsole = document.getElementById("forgeconsole");
+                    if (forgeconsole) {
+                        forgeconsole.innerHTML = "";
+                    }
+                };
+            </script>
+    </head>
+    
+    <body>
+        <div id="content">
+            
+            <div id="wrapper_top">
+                <div class="left">
+                    <h2>Scripts</h2>
+                    <div id="forgescripts">
+						src: forge/app_config.js <br/>
+                        src: forge/all-priv.js <br/>
+                        {% if "background" in plugins and "config" in plugins["background"] and "files" in plugins["background"]["config"] %}\
+						{% for bg_file in plugins["background"]["config"]["files"] %}\
+	                    {% if bg_file.startswith('http://') or bg_file.startswith('https://') %}\
+		                src: ${bg_file} <br/>
+	                    {% end %}
+	                    {% if not bg_file.startswith('/') and not bg_file.startswith('http://') and not bg_file.startswith('https://') %}\
+		                src: src/${bg_file} <br/>
+	                    {% end %}
+	                    {% if bg_file.startswith('/') %}\
+		                src: src${bg_file} <br/>
+	                    {% end %}
+                        {% end %}
+						{% end %}
+                    </div> <!-- forgescripts -->
+                </div> <!-- left -->
+                <div class="right">
+                    <button onclick="clear_console();">clear console</button>
+                </div> <!-- right -->
+            </div> <!-- wrapper_top -->
+            <div id="shadow"></div>
+
+            <div id="wrapper_bottom">
+                <h2>Log</h2>
+                <div id="forgeconsole"></div>
+            </div> <!-- wrapper_bottom -->
+            
+        </div> <!-- #content -->
+    </body>
+    
+</html>

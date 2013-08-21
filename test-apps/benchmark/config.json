@@ -1,0 +1,14 @@
+{
+	"uuid": "benchmark",
+	"name": "benchmark",
+	"author": "Trigger.io",
+	"version": "0.1",
+	"platform_version": "default",
+	"description": "benchmark",
+	"permissions": [  ],
+	"background_files": [ ],
+	"activations": [ ],
+	"logging": {
+		"level": "CRITICAL"
+	}
+}

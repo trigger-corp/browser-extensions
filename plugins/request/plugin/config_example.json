@@ -1,0 +1,7 @@
+{
+	"permissions": [
+		"http://ops.trigger.io/*",
+		"https://trigger.io/*",
+		"file:///*/*"
+	]
+}

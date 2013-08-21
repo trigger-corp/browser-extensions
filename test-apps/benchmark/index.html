@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bench</title>
+		<style>
+			body {
+				font-size: 1.5em;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Forge</h1>
+		<h2>Sequential</h2>
+		<p><strong>10 bytes: </strong><a href="#" onclick="seq(100, 10); return false;">100 requests</a> <a href="#" onclick="seq(1000, 10); return false;">1000 requests</a> <a href="#" onclick="seq(10000, 10); return false;">10000 requests</a></p>
+		<p><strong>100 bytes: </strong><a href="#" onclick="seq(100, 100); return false;">100 requests</a> <a href="#" onclick="seq(1000, 100); return false;">1000 requests</a> <a href="#" onclick="seq(10000, 100); return false;">10000 requests</a></p>
+		<p><strong>1000 bytes: </strong><a href="#" onclick="seq(100, 1000); return false;">100 requests</a> <a href="#" onclick="seq(1000, 1000); return false;">1000 requests</a> <a href="#" onclick="seq(10000, 1000); return false;">10000 requests</a></p>
+		<p><strong>10000 bytes: </strong><a href="#" onclick="seq(100, 10000); return false;">100 requests</a> <a href="#" onclick="seq(1000, 10000); return false;">1000 requests</a> <a href="#" onclick="seq(10000, 10000); return false;">10000 requests</a></p>
+		<h2>Concurrent</h2>
+		<p><strong>10 bytes: </strong><a href="#" onclick="con(100, 10); return false;">100 requests</a> <a href="#" onclick="con(1000, 10); return false;">1000 requests</a> <a href="#" onclick="con(10000, 10); return false;">10000 requests</a></p>
+		<p><strong>100 bytes: </strong><a href="#" onclick="con(100, 100); return false;">100 requests</a> <a href="#" onclick="con(1000, 100); return false;">1000 requests</a> <a href="#" onclick="con(10000, 100); return false;">10000 requests</a></p>
+		<p><strong>1000 bytes: </strong><a href="#" onclick="con(100, 1000); return false;">100 requests</a> <a href="#" onclick="con(1000, 1000); return false;">1000 requests</a> <a href="#" onclick="con(10000, 1000); return false;">10000 requests</a></p>
+		<p><strong>10000 bytes: </strong><a href="#" onclick="con(100, 10000); return false;">100 requests</a> <a href="#" onclick="con(1000, 10000); return false;">1000 requests</a> <a href="#" onclick="con(10000, 10000); return false;">10000 requests</a></p>
+		<script>
+			// Generate data
+			var data = {};
+			data['10'] = '1234567890';
+			data['100'] = '';
+			for (i = 0; i < 10; i++) {
+				data['100'] += data['10'];
+			}
+			data['1000'] = '';
+			for (i = 0; i < 10; i++) {
+				data['1000'] += data['100'];
+			}
+			data['10000'] = '';
+			for (i = 0; i < 10; i++) {
+				data['10000'] += data['1000'];
+			}
+			
+			// Ping method
+			var ping = function (data, cb) {
+				forge.internal.ping(data, cb);
+				//window.plugins.ping.ping(data, cb)
+			}
+			
+			var seq = function (total, len) {
+				var count = 0;
+				var start = new Date().getTime();
+				var go = function () {
+					count++;
+					if (count <= total) {
+						ping(data[len], go);
+					} else {
+						document.body.innerHTML += '<p>'+total+' sequential requests with '+len+' bytes of data: '+((new Date().getTime() - start)/1000)+' seconds</p>';
+					}
+				}
+				go();
+			}
+			
+			var con = function (total, len) {
+				var count = 0;
+				var start = new Date().getTime();
+				var response = function () {
+					count++;
+					if (count == total) {
+						document.body.innerHTML += '<p>'+total+' concurrent requests with '+len+' bytes of data: '+((new Date().getTime() - start)/1000)+' seconds</p>';
+					}
+				}
+				for (i = 0; i < total; i++) {
+					ping(data[len], response)
+				}
+			}
+		</script>
+	</body>
+</html>

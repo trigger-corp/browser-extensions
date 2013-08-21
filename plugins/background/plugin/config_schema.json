@@ -1,0 +1,17 @@
+{
+	"required": false,
+	"type": "object",
+	"description": "Run scripts in the background.",
+	"_docs": "http://docs.trigger.io/en/v1.4/modules/background.html",
+	"properties": {
+		"files": {
+			"required": true,
+			"type": "array", 
+			"description": "files which contain code to run as daemons", 
+			"items": {
+				"type": "string",
+				"_filepicker": true
+			}
+		}
+	}
+}

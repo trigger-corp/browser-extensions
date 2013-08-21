@@ -1,0 +1,165 @@
+{#
+    IMPORTANT!!!
+    to avoid blank lines in generated output end all directives with "\"
+    directives should also not have any proceeding tabs as those are retained and mess up formatting
+#}\
+{% python
+activate_patterns = []
+if "activations" in plugins and "config" in plugins["activations"] and "activations" in plugins["activations"]["config"]:
+	activate_patterns = activate_patterns + [pat for act in plugins["activations"]["config"]["activations"] for pat in act['patterns']]
+if "request" in plugins and "config" in plugins['request'] and "permissions" in plugins['request']['config']:
+	activate_patterns = activate_patterns + [perm for perm in plugins["request"]["config"]["permissions"]]
+def clean_patterns():
+	pats = activate_patterns[:]
+	while "http://*/*" in pats:
+		pats.remove("http://*/*")
+	while "https://*/*" in pats:
+		pats.remove("https://*/*")
+	while "<all_urls>" in pats:
+		pats.remove("<all_urls>")
+	for i, pat in enumerate(pats):
+		if pat.find("http://") == 0:
+			pats[i] = pat[7:]
+		if pat.find("https://") == 0:
+			pats[i] = pat[8:]
+		if pats[i].find("/") > -1:
+			pats[i] = pats[i][0:pats[i].find("/")]
+	return pats
+domain_patterns = clean_patterns()
+all_urls = ('<all_urls>' in activate_patterns) or ('http://*/*' in activate_patterns and 'https://*/*' in activate_patterns)
+%}\
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>AUTHOR_HERE</string>
+	<key>CFBundleDisplayName</key>
+	<string>APP_NAME_HERE</string>
+	<key>CFBundleIdentifier</key>
+	<string>PACKAGE_NAME_HERE</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>VERSION_HERE</string>
+	<key>CFBundleVersion</key>
+	<string>VERSION_HERE</string>
+	<key>Chrome</key>
+		<dict>
+			<key>Database Quota</key>
+			<real>104857600</real>
+			<key>Global Page</key>
+			<string>forge.html</string>
+{% if "button" in plugins and "config" in plugins["button"] %}\
+	{% if "default_popup" in plugins["button"]["config"] %}\
+			<key>Popovers</key>
+			<array>
+				<dict>
+					<key>Filename</key>
+					<string>$plugins.button.config.default_popup</string>
+					<key>Identifier</key>
+					<string>PACKAGE_NAME_HERE-popover</string>
+				</dict>
+			</array>
+	{% end default_popup directive%}\
+			<key>Toolbar Items</key>
+			<array>
+				<dict>
+					<key>Command</key>
+					<string></string>
+					<key>Identifier</key>
+					<string>forge-button</string>
+	{% choose %}\
+					<key>Image</key>
+		{% when plugins["button"]["config"].has_key('default_icons') and plugins["button"]["config"]['default_icons'].has_key('safari') %}\
+					<string>${plugins.button.config.default_icons.safari}</string>
+		{% end default_icons directive %}\
+		{% when plugins["button"]["config"].get('default_icon') %}\
+					<string>${plugins.button.config.default_icon}</string>
+		{% end default_icon directive %}\
+		{% otherwise %}\
+					<string>forge/default_toolbar_button.png</string>
+		{% end otherwise directive %}\
+	{% end choose directive %}\
+					<key>Label</key>
+					<string>${plugins["button"]["config"].get('default_title') or ' '}</string>
+					<key>Palette Label</key>
+					<string>${plugins["button"]["config"].get('default_title') or ' '}</string>
+					<key>Tool Tip</key>
+					<string>${plugins["button"]["config"].get('default_title') or ' '}</string>
+	{% if 'default_popup' in plugins["button"]["config"] %}\
+					<key>Popover</key>
+					<string>PACKAGE_NAME_HERE-popover</string>
+	{% end default_popup directive%}\
+				</dict>
+			</array>
+{% end browser_action directive%}\
+		</dict>
+	<key>Content</key>
+	<dict>
+		<key>Scripts</key>
+		<dict>
+			<key>${'Start' if value_of('trigger')=='document_start' else 'End'}</key>
+			<array>
+				<string>forge/app_config.js</string>
+				<string>forge/all.js</string>
+{% if "activations" in plugins and "config" in plugins["activations"] and "activations" in plugins["activations"]["config"]%}\
+	{% for activation in plugins["activations"]["config"]["activations"] %}\
+		{% if not activation.has_key("all_frames") or activation["all_frames"] is False %}\
+				<string>forge/disable-frames.js</string>
+		{% end if %}\
+		{% for script in activation.scripts %}\
+				<string>${script}</string>
+		{% end for script %}\
+	{% end for activation %}\
+{% end if len(activations) %}\
+			</array>
+		</dict>
+		<key>Stylesheets</key>
+		<array>
+{% if "activations" in plugins and "config" in plugins["activations"] and "activations" in plugins["activations"]["config"] %}\
+{% for activation in plugins["activations"]["config"]["activations"] %}\
+	{% for style in activation.styles %}\
+			<string>${style}</string>
+	{% end styles %}\
+{% end activations %}\
+{% end activations %}\
+		</array>
+	</dict>
+	<key>Description</key>
+	<string>DESCRIPTION_HERE</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+		<dict>
+			<key>Website Access</key>
+			<dict>
+				<key>Level</key>
+{% if all_urls %}\
+				<string>All</string>
+{% end %}\
+{% if not all_urls %}\
+				<string>Some</string>
+				<key>Allowed Domains</key>
+				<array>
+	{% for pat in domain_patterns %}\
+					<string>${pat}</string>
+	{% end for pat %}\
+				</array>
+{% end if "<all_urls>" not in activate_patterns() %}\
+{% if activate_on_https %}\
+				<key>Include Secure Pages</key>
+				<true/>
+{% end if activate_on_https %}\
+			</dict>
+		</dict>
+{% if defined('homepage') %}\
+	<key>Website</key>
+	<string>${homepage}</string>
+{% end if defined('homepage') %}\
+{% if "update_url" in plugins and "config" in plugins["update_url"]  and "safari" in plugins["update_url"]["config"] %}\
+	<key>Update Manifest URL</key>
+	<string>${plugins["update_url"]["config"]["safari"]}</string>
+{% end if defined('update_url') %}\
+</dict>
+</plist>

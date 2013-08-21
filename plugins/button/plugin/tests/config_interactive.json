@@ -1,0 +1,11 @@
+{
+	"default_icon": "fixtures/button/1.png", 
+	"default_icons": {
+		"chrome": "fixtures/button/1.png", 
+		"firefox": "fixtures/button/1.png", 
+		"ie": "fixtures/button/1.ico", 
+		"safari": "fixtures/button/1.png"
+	}, 
+	"default_popup": "fixtures/button/popup1.html", 
+	"default_title": "Title 1"
+}

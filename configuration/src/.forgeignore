@@ -1,0 +1,9 @@
+.hg/
+.git/
+.svn/
+.cvs/
+.bzr/
+.darcs/
+./config.json
+./identity.json
+.forgeignore

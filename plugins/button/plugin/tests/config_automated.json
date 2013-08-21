@@ -1,0 +1,8 @@
+{
+	"default_icon": "fixtures/button/16.png",
+	"default_icons": {
+		"ie": "fixtures/button/16.ico"
+	},
+	"default_popup": "index.html",
+	"default_title": "Test Platform"
+}

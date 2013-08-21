@@ -1,0 +1,447 @@
+{
+	"description": "Forge app generation configuration",
+	"properties": {
+		"config_version": {
+			"required": true,
+			"type": "string",
+			"description": "An internal reference to the version of the layout of this config file, you should not need to change this manually",
+			"_order": 101
+		},
+		"name": {
+			"required": true,
+			"type": "string",
+			"description": "The display name of your app as it will be seen by the user.",
+			"_order": 1
+		},
+		"author": {
+			"required": true,
+			"type": "string",
+			"_order": 3
+		},
+		"description": {
+			"required": false,
+			"type": "string",
+			"_order": 2
+		},
+		"platform_version": {
+			"required": true, 
+			"type": "string", 
+			"description": "The Forge platform level this application should be built against, most of the time you will not need to manually change this option.",
+			"_docs": "https://trigger.io/docs/v1.4/api/release_notes.html",
+			"_order": 6
+		},
+		"version": {
+			"required": true,
+			"type": "string",
+			"description": "The version number for your app, consisting of up to 3 . separated integers, i.e. \"1.3.32\".",
+			"pattern": "^\\d{,5}(\\.\\d{,5})?(\\.\\d{,5})?$",
+			"_order": 4
+		},
+		"homepage": {
+			"required": false,
+			"type": "string",
+			"description": "Your website, or location of more information about this app.",
+			"_order": 5
+		},
+		"trusted_urls": {
+			"required": false,
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"description": "An array of trusted external url match patterns, your app will be able to navigate to these pages and they will have access to native APIs."
+		},
+		"partners": {
+			"required": false,
+			"description": "Configuration for 3rd party integrations with Forge.",
+			"type": "object",
+			"_order": 51,
+			"properties": {
+				"parse": {
+					"required": false,
+					"description": "Parse.com config to enable push notifications.",
+					"type": "object",
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/parse.html",
+					"properties": {
+						"applicationId": {
+							"required": true,
+							"description": "Application ID from parse.com",
+							"type": "string"
+						},
+						"clientKey": {
+							"required": true,
+							"description": "Client key from parse.com",
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"plugins": {
+			"required": false,
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"hash": {
+						"type": "string",
+						"required": true
+					},
+					"type": {
+						"type": "string",
+						"required": false,
+						"enum": ["external", "project"]
+					},
+					"config": {
+						"type": ["object"],
+						"required": false
+					}
+				}
+			}
+		},
+		"modules": {
+			"required": true,
+			"description": "Enable and configure individual modules.",
+			"type": "object",
+			"_order": 50,
+			"_docs": "https://trigger.io/docs/v1.4/api/modules/index.html",
+			"properties": {
+				"activations": {
+					"required": false,
+					"type": "array", 
+					"description": "Load styles and scripts into websites accessed by the user based on match patterns.",
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/activations.html",
+					"items": {
+						"type": "object", 
+						"description": "an individual activation declaration", 
+						"properties": {
+							"patterns": {
+								"required": true, 
+								"type": "array", 
+								"description": "Match patterns, defining URLs to activate on.",
+								"items": {
+									"type": "string"
+								}
+							}, 
+							"exclude_patterns": {
+								"required": false,
+								"type": "array",
+								"description": "Match patterns, defining URLs to not load extension on. (IE only)",
+								"items": {
+									"type": "string"
+								}
+							},
+							"scripts": {
+								"required": true, 
+								"type": "array", 
+								"description": "JavaScript files to embed.",
+								"items": {
+									"type": "string",
+									"_filepicker": true
+								}
+							}, 
+							"styles": {
+								"required": true, 
+								"type": "array", 
+								"description": "CSS files to embed.",
+								"items": {
+									"type": "string",
+									"_filepicker": true
+								}
+							},
+							"run_at": {
+								"required": false,
+								"type": "string",
+								"description": "When the activated scripts should be run.",
+								"enum": ["start", "ready", "end"]
+							},
+							"all_frames": {
+								"required": false,
+								"type": "boolean",
+								"description": "Whether or not the activation will run on all frames on the page."
+							}
+						}
+					}
+				},
+				"background": {
+					"required": false,
+					"type": "object",
+					"description": "Run scripts in the background.",
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/background.html",
+					"properties": {
+						"files": {
+							"required": true,
+							"type": "array", 
+							"description": "files which contain code to run as daemons", 
+							"items": {
+								"type": "string",
+								"_filepicker": true
+							}
+						}
+					}
+				},
+				"button": {
+					"required": false, 
+					"type": "object", 
+					"description": "Create clickable browser action buttons.", 
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/button.html",
+					"properties": {
+						"default_icons": {
+							"required": false, 
+							"type": "object",
+							"properties": {
+								"ie": {
+									"required": false, 
+									"type": "string",
+									"_filepicker": true
+								}, 
+								"chrome": {
+									"required": false, 
+									"type": "string",
+									"_filepicker": true
+								}, 
+								"firefox": {
+									"required": false, 
+									"type": "string",
+									"_filepicker": true
+								}, 
+								"safari": {
+									"required": false, 
+									"type": "string",
+									"_filepicker": true
+								}
+							}
+						}, 
+						"default_title": {
+							"required": false, 
+							"type": "string"
+						}, 
+						"default_icon": {
+							"required": false, 
+							"type": "string",
+							"_filepicker": true
+						}, 
+						"default_popup": {
+							"required": false, 
+							"type": "string",
+							"_filepicker": true
+						}
+					}
+				},
+				"geolocation": {
+					"required": false,
+					"description": "Access the users location",
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/geolocation.html",
+					"type": "boolean"
+				},
+				"icons": {
+					"required": false, 
+					"type": "object", 
+					"description": "Specify icons to be used to represent the application", 
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/icons.html",
+					"properties": {
+						"chrome": {
+							"required": false,
+							"type": "object",
+							"properties": {
+								"16": {
+									"required": true,
+									"type": "string",
+									"_filepicker": true
+								},
+								"48": {
+									"required": true,
+									"type": "string",
+									"_filepicker": true
+								},
+								"128": {
+									"required": true,
+									"type": "string",
+									"_filepicker": true
+								}
+							}
+						},
+						"firefox": {
+							"required": false,
+							"type": "object",
+							"properties": {
+								"32": {
+									"required": true,
+									"type": "string",
+									"_filepicker": true
+								},
+								"64": {
+									"required": true,
+									"type": "string",
+									"_filepicker": true
+								}
+							}
+						},
+						"safari": {
+							"required": false,
+							"type": "object",
+							"properties": {
+								"32": {
+									"required": true,
+									"type": "string",
+									"_filepicker": true
+								},
+								"48": {
+									"required": true,
+									"type": "string",
+									"_filepicker": true
+								},
+								"64": {
+									"required": true,
+									"type": "string",
+									"_filepicker": true
+								}
+							}
+						}
+					}
+				},
+				"is": {
+					"required": false,
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/is.html",
+					"description": "API methods to determine information about the platform currently running your app.",
+					"type": "boolean"
+				},
+				"logging": {
+					"required": false,
+					"type": "object",
+					"description": "Configuration of the logging in your app",
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/logging.html",
+					"properties": {
+						"level": {
+							"required": true,
+							"description": "How verbose logging output should be",
+							"type": "string",
+							"enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+						}
+					}
+				},
+				"message": {
+					"required": false,
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/message.html",
+					"description": "API for communication between various parts of your app.",
+					"type": "boolean"
+				},
+				"notification": {
+					"required": false,
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/notification.html",
+					"description": "Display notifications to your users",
+					"type": "boolean"
+				},
+				"package_names": {
+					"required": false,
+					"type": "object",
+					"description": "Override the generated package names in your apps.",
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/package_names.html",
+					"properties": {
+						"firefox": {
+							"required": false,
+							"type": "string"
+						},
+						"safari": {
+							"required": false,
+							"type": "string"
+						}
+					}
+				},
+				"parameters": {
+					"required": false,
+					"type": "object",
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/parameters.html",
+					"description": "Arbitrary extra configuration which will be available as forge.config.modules.parameters in your JavaScript."
+				},
+				"prefs": {
+					"required": false,
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/prefs.html",
+					"description": "Save persistent data between runs of your app.",
+					"type": "boolean"
+				},
+				"request": {
+					"required": false,
+					"type": "object",
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/request.html",
+					"description": "Make cross domain ajax requests.",
+					"properties": {
+						"permissions": {
+							"required": true, 
+							"type": "array", 
+							"description": "Match patterns specifying allows URLs for cross domain requests.", 
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"requirements": {
+					"required": false,
+					"type": "object",
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/requirements.html",
+					"description": "Platform specific app limitations.",
+					"properties": {
+						"chrome": {
+							"required": false,
+							"type": "object",
+							"properties": {
+								"content_security_policy": {
+									"required": false,
+									"type": "string"
+								},
+								"web_accessible_resources": {
+									"required": false,
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"tabs": {
+					"required": false,
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/tabs.html",
+					"description": "APIs to deal with opening tabs and external sites within your app.",
+					"type": "boolean"
+				},
+				"tools": {
+					"required": false,
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/tools.html",
+					"description": "Miscellaneous API methods",
+					"type": "boolean"
+				},
+				"update_url": {
+					"required": false, 
+					"type": "object", 
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/update_url.html",
+					"description": "URLs to check for application updates from.", 
+					"properties": {
+						"chrome": {
+							"required": false, 
+							"type": "string"
+						}, 
+						"firefox": {
+							"required": false, 
+							"type": "string"
+						}
+					}
+				},
+				"urlhandler": {
+					"required": false,
+					"_docs": "https://trigger.io/docs/v1.4/api/modules/urlhandler.html",
+					"description": "Listen for a custom URL scheme from the phones browser and other apps.",
+					"type": "object",
+					"properties": {
+						"scheme": {
+							"required": true,
+							"type": "string"
+						}
+					}
+				}
+			}
+		}
+	}
+}

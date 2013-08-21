@@ -1,0 +1,7 @@
+{
+    "description": "My plugin template", 
+    "name": "document", 
+    "platform_version": "feature_modules_as_plugins", 
+    "uuid": "81abed2565fa11e293f808002733a3f9", 
+    "version": "0.1"
+}

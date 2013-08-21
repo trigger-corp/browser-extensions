@@ -1,0 +1,56 @@
+{
+	"description": "Schema for locally set configuration",
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"profile": {
+			"type": "string",
+			"description": "for switching between profiles in the config file",
+			"required": false,
+			"blank": false
+		},
+
+		"general": {
+			"required": false,
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"interactive": {
+					"type": "boolean",
+					"required": false
+				}
+			}
+		},
+		"ie": {
+			"required": false,
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"profile": {
+					"required": false,
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"developer_certificate": {
+							"type": "string",
+							"blank": true,
+							"required": false
+						},
+						"developer_certificate_path": {
+							"type": "string",
+							"blank": true,
+							"required": false,
+							"_filepicker": true
+						},
+						"developer_certificate_password": {
+							"type": "string",
+							"blank": true,
+							"required": false,
+							"_password": true
+						}
+					}
+				}
+			}
+		}
+	}
+}

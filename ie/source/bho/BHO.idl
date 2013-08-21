@@ -1,0 +1,35 @@
+import "oaidl.idl";
+import "ocidl.idl";
+
+
+/**
+ * Interface: IBrowserHelperObject 
+ */
+[
+    object,
+    uuid(5E5BFAA1-40A0-4FD4-8FA9-66DD8D553337),
+    dual,
+    nonextensible,
+    pointer_default(unique)
+]
+interface IBrowserHelperObject : IDispatch {
+};
+
+
+/** 
+ * Library: ForgeBHOLib */
+[
+    uuid(A6F64DB8-F0DF-4C25-95FA-1FD20AC302E4),
+    version(1.0),
+]
+library ForgeBHOLib {
+    importlib("stdole2.tlb");
+    importlib("Forge.tlb");
+
+    [
+        uuid(E017A723-53B3-4952-895D-ED7C3377C885)		
+    ]
+    coclass BrowserHelperObject {
+        [default] interface IBrowserHelperObject;
+    };
+};

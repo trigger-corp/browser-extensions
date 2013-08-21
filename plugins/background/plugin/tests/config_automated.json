@@ -1,0 +1,11 @@
+{
+	"files": [
+		"js/jquery-1.7.2.min.js",
+		"js/qunit-1.10.0.js",
+		"tests/prefs.js",
+		"tests/request.js",
+		"fixtures/background/backgroundMessaging.js",
+		"fixtures/activations/test_result_client.js",
+		"fixtures/background/background_automated.js"
+	]
+}

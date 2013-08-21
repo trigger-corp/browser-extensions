@@ -1,0 +1,259 @@
+// Forge.idl : IDL source for Forge
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (Forge.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+
+// INativeBackground
+[
+    object,
+    uuid(10D40766-F80D-478A-AA30-D90A8B49C789),
+    dual,
+    nonextensible,
+    pointer_default(unique)
+]
+interface INativeBackground : IDispatch {
+    [id(1)]  HRESULT load    ([in] BSTR uuid, [in] BSTR url, [in] BOOL isVisible,
+                              [out,retval] unsigned int *instanceId);
+    [id(2)]  HRESULT unload  ([in] BSTR uuid, [in] unsigned int instanceId);
+    [id(3)]  HRESULT visible ([in] BSTR uuid, [in] BOOL isVisible);
+};
+
+
+// INativeExtensions
+[
+    object,
+    uuid(D462DCAD-F466-413A-BFB1-DB0B5FE5632D),
+    dual,
+    nonextensible,
+    pointer_default(unique)
+]
+interface INativeExtensions : IDispatch {
+    [id(1)]  HRESULT log         ([in] BSTR uuid, [in] BSTR message);
+    [id(2)]  HRESULT prefs_get   ([in] BSTR uuid, [in] BSTR name, 
+                                  [in] IDispatch *success, 
+                                  [in] IDispatch *error);
+    [id(3)]  HRESULT prefs_set   ([in] BSTR uuid, [in] BSTR name, [in] BSTR value, 
+                                  [in] IDispatch *success, 
+                                  [in] IDispatch *error);
+    [id(4)]  HRESULT prefs_keys  ([in] BSTR uuid, 
+                                  [in] IDispatch *success, 
+                                  [in] IDispatch *error);
+    [id(5)]  HRESULT prefs_all   ([in] BSTR uuid, 
+                                  [in] IDispatch *success, 
+                                  [in] IDispatch *error);
+    [id(6)]  HRESULT prefs_clear ([in] BSTR uuid, [in] BSTR name,
+                                  [in] IDispatch *success, 
+                                  [in] IDispatch *error);
+    [id(7)]  HRESULT getURL      ([in] BSTR url, 
+                                  [out,retval] BSTR *out_url);
+    [id(8)]  HRESULT xhr         ([in] BSTR method, 
+                                  [in] BSTR url, 
+                                  [in] BSTR data, 
+                                  [in] BSTR contentType,
+                                  [in] BSTR headers,
+                                  [in] IDispatch *success,
+                                  [in] IDispatch *error);
+    [id(9)]  HRESULT notification ([in] BSTR icon, [in] BSTR title, [in] BSTR text,
+                                   [out,retval] BOOL *out_success);
+    [id(10)] HRESULT set_tabId    ([in] UINT tabId);
+    [id(11)] HRESULT get_tabId    ([out,retval] UINT *out_tabId);
+    [id(12)] HRESULT set_location ([in] BSTR location);
+    [id(13)] HRESULT get_location ([out,retval] BSTR *out_location);
+};
+
+
+// INativeMessaging
+[
+    object,
+    uuid(E74BB8EA-65C0-4668-A5F0-6A28108DCA84),
+    dual,
+    nonextensible,
+    pointer_default(unique)
+]
+interface INativeMessaging : IDispatch {
+    [id(1)]  HRESULT load         ([in] BSTR uuid, 
+                                   [in] unsigned int instanceId);
+    [id(2)]  HRESULT unload       ([in] BSTR uuid, 
+                                   [in] unsigned int instanceId);
+    [id(3)]  HRESULT tabs_set     ([in] BSTR uuid, 
+                                   [in] UINT tabId,
+                                   [in] BSTR url,
+                                   [in] BSTR title,
+                                   [in] BOOL focused);
+    [id(4)]  HRESULT tabs_active  ([in] BSTR uuid, 
+                                   [in] IDispatch *callback,
+                                   [out,retval] UINT *out_tabId);
+    [id(5)]  HRESULT fg_listen    ([in] BSTR uuid, [in] UINT tabId, 
+                                   [in] BSTR type,
+                                   [in] IDispatch *callback,
+                                   [in] IDispatch * error);
+    [id(6)]  HRESULT fg_broadcast ([in] BSTR uuid, 
+                                   [in] BSTR type,
+                                   [in] BSTR content,
+                                   [in] IDispatch *callback,
+                                   [in] IDispatch *error);
+    [id(7)]  HRESULT fg_toFocussed([in] BSTR uuid, 
+                                   [in] BSTR type,
+                                   [in] BSTR content,
+                                   [in] IDispatch *callback,
+                                   [in] IDispatch *error);
+    [id(8)]  HRESULT fg_broadcastBackground([in] BSTR uuid,
+                                            [in] BSTR type,
+                                            [in] BSTR content,
+                                            [in] IDispatch *callback,
+                                            [in] IDispatch *error);
+    [id(9)] HRESULT bg_listen     ([in] BSTR uuid, 
+                                   [in] BSTR type,
+                                   [in] IDispatch *callback,
+                                   [in] IDispatch *error);
+    [id(10)] HRESULT bg_broadcast ([in] BSTR uuid,
+                                   [in] BSTR type,
+                                   [in] BSTR content,
+                                   [in] IDispatch *callback,
+                                   [in] IDispatch *error);
+    [id(11)] HRESULT bg_toFocussed([in] BSTR uuid,
+                                   [in] BSTR type,
+                                   [in] BSTR content,
+                                   [in] IDispatch *callback,
+                                   [in] IDispatch *error);
+
+};
+
+
+// INativeControls
+[
+    object,
+    uuid(2C938654-2875-404A-8D95-664CC1F36620),
+    dual,
+    nonextensible,
+    pointer_default(unique)
+]
+interface INativeControls : IDispatch {
+    [id(1)]  HRESULT load             ([in] BSTR uuid, 
+                                       [in] BSTR extensionPath,
+                                       [in] unsigned int instanceId,
+                                       [in] ULONG hwnd);
+    [id(2)]  HRESULT unload           ([in] BSTR uuid, 
+                                       [in] unsigned int instanceId);
+    [id(3)]  HRESULT popup_visible    ([in] BSTR  uuid, 
+                                       [in] BOOL  isVisible,
+                                       [in] POINT point); // @ugly
+    [id(4)]  HRESULT button_setIcon   ([in] BSTR uuid, 
+                                       [in] BSTR url,
+                                       [in] IDispatch *success, 
+                                       [in] IDispatch *error); 
+    [id(5)]  HRESULT button_setURL    ([in] BSTR uuid, 
+                                       [in] BSTR url,
+                                       [in] IDispatch *success, 
+                                       [in] IDispatch *error);
+    [id(6)]  HRESULT button_onClicked ([in] BSTR uuid, 
+                                       [in] IDispatch *callback);
+    [id(7)]  HRESULT button_click     ([in] BSTR uuid, 
+                                       [in] POINT point); // @ugly
+    [id(8)]  HRESULT button_setTitle  ([in] BSTR uuid, 
+                                       [in] BSTR title,
+                                       [in] IDispatch *success, 
+                                       [in] IDispatch *error);
+    [id(9)]  HRESULT button_setBadge  ([in] BSTR uuid, 
+                                       [in] INT number,
+                                       [in] IDispatch *success, 
+                                       [in] IDispatch *error);
+    [id(10)] HRESULT button_setBadgeBackgroundColor ([in] BSTR uuid, 
+                                                     [in] BYTE r, 
+                                                     [in] BYTE g, 
+                                                     [in] BYTE b,
+                                                     [in] BYTE a,
+                                                     [in] IDispatch *success,
+                                                     [in] IDispatch *error);
+
+    [id(11)] HRESULT popup_hwnd([in]         BSTR  uuid, 
+                                [out]        BOOL  *out_visible,
+                                [out,retval] ULONG *out_hwnd);
+};
+
+
+// ForgeLib
+[
+    uuid(BB02A111-23B2-4242-9C8E-B093BD0A2E3C),
+    version(1.0),
+]
+library ForgeLib
+{
+    importlib("stdole2.tlb");
+
+    // _INativeBackgroundEvents
+    [
+     uuid(3F969EF1-4860-4564-87FC-59925DF0EC62)
+    ]
+    dispinterface _INativeBackgroundEvents
+    {
+        properties:
+        methods:
+    };
+
+    // NativeBackground
+    [
+        uuid(7F2FA86A-181A-4F8F-B853-51F897A91227)
+    ]
+    coclass NativeBackground
+    {
+        [default] interface INativeBackground;
+        [default, source] dispinterface _INativeBackgroundEvents;
+    };
+
+    // _INativeExtensionsEvents
+    [
+        uuid(CFD3A45B-3B01-47D3-8433-5A72D8026392)
+    ]
+    dispinterface _INativeExtensionsEvents
+    {
+        properties:
+        methods:
+    };
+
+    // NativeExtensions
+    [
+        uuid(71B97DA2-A432-42FA-AD66-28C567704807)
+    ]
+    coclass NativeExtensions
+    {
+        [default] interface INativeExtensions;
+        [default, source] dispinterface _INativeExtensionsEvents;
+    };
+
+    // _INativeMessagingEvents
+    [
+     uuid(27FBF3C5-1A02-4375-ADC3-132FB74327B1)
+    ]
+    dispinterface _INativeMessagingEvents
+    {
+        properties:
+        methods:
+    };
+
+    // NativeMessaging
+    [
+        uuid(99E2F3AB-15ED-4F76-8921-2471702C2EF3)
+    ]
+    coclass NativeMessaging
+    {
+        [default] interface INativeMessaging;
+        [default, source] dispinterface _INativeMessagingEvents;
+    };
+
+    // NativeControls
+    [
+        uuid(5DAAB57B-836A-456C-99D8-A5E0AF03FD94)      
+    ]
+    coclass NativeControls
+    {
+        [default] interface INativeControls;
+    };
+};
+
+

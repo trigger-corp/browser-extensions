@@ -1,0 +1,36 @@
+HKCR
+{
+    NoRemove AppID
+    {
+        ForceRemove '%APPID%' = s 'Forge'
+        {
+            val DllSurrogate = s ''
+        }   
+        ForceRemove 'forge32.dll'
+        {
+            val AppID = s '%APPID%'
+        }
+        ForceRemove 'forge64.dll'
+        {
+            val AppID = s '%APPID%'
+        }
+    }
+}
+
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove {71B97DA2-A432-42FA-AD66-28C567704807} = s 'NativeExtensions Class'
+		{
+			ForceRemove Programmable
+            val AppID = s '%APPID%'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Single'
+			}
+			TypeLib = s '{BB02A111-23B2-4242-9C8E-B093BD0A2E3C}'
+			Version = s '1.0'
+		}
+	}
+}

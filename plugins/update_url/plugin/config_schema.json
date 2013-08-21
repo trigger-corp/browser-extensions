@@ -1,0 +1,16 @@
+{
+	"required": false, 
+	"type": "object", 
+	"_docs": "http://docs.trigger.io/en/v1.4/modules/update_url.html",
+	"description": "URLs to check for application updates from.", 
+	"properties": {
+		"chrome": {
+			"required": false, 
+			"type": "string"
+		}, 
+		"firefox": {
+			"required": false, 
+			"type": "string"
+		}
+	}
+}

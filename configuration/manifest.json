@@ -1,0 +1,38 @@
+[
+	{
+		"path": "local_config.json",
+		"template": false
+	},
+	{
+		"path" : "src/identity.json",
+		"template" : true
+	},
+	{
+		"path" : "src/config.json",
+		"template" : true
+	},
+	{
+		"path" : "src/index.html",
+		"template" : false
+	},
+	{
+		"path" : "src/css/bootstrap.css",
+		"template" : false
+	},
+	{
+		"path" : "src/js/jquery-2.0.0.js",
+		"template" : false
+	},
+	{
+		"path" : "src/js/bootstrap.js",
+		"template" : false
+	},
+	{
+		"path" : "src/js/main.js",
+		"template" : false
+	},
+	{
+		"path" : "src/.forgeignore",
+		"template" : false
+	}
+]

@@ -1,0 +1,77 @@
+{% python
+
+def activate_patterns():
+	if "activations" in plugins and "config" in plugins["activations"] and "activations" in plugins["activations"]["config"]:
+		return [pat for act in plugins['activations']['config']['activations'] for pat in act['patterns']]
+	else:
+		return []
+def request_permissions():
+	if "request" in plugins and "config" in plugins['request'] and "permissions" in plugins['request']['config']:
+		return plugins["request"]["config"]["permissions"]
+	else:
+		return []
+def tabs_permission():
+	if "tabs" in plugins or "message" in plugins:
+		return ["tabs"]
+	else:
+		return []
+def notifications_permission():
+	if "notification" in plugins:
+		return ["notifications"]
+	else:
+		return []
+def clean_browser_action(ba):
+	res = {}
+	if 'chrome' in ba.get('default_icons', {}):
+		res['default_icon'] = ba['default_icons']['chrome']
+	elif 'default_icon' in ba:
+		res['default_icon'] = ba['default_icon']
+	for attr in ('default_title', 'default_popup'):
+		if attr in ba:
+			res[attr] = ba[attr]
+	return res
+def get_run_at(run_at):
+	if run_at == 'start':
+		return 'document_start'
+	if run_at == 'ready':
+		return 'document_end'
+	if run_at == 'end':
+		return 'document_idle'
+%}\
+{
+	"name": "APP_NAME_HERE",
+	"version": "VERSION_HERE",
+	"description": "DESCRIPTION_HERE",
+	"permissions": ${json.dumps(request_permissions() + activate_patterns() + tabs_permission() + notifications_permission())},
+	"content_security_policy": "script-src 'unsafe-eval'; object-src 'self'",
+	"background": {"page": "forge.html"}{% if value_of("homepage", "") != "" %},
+	"homepage_url": ${json.dumps(value_of("homepage", ""))}{% end %}{% if "activations" in plugins and "config" in plugins["activations"] and "activations" in plugins["activations"]["config"] and len(plugins['activations']['config']['activations']) %},
+	"content_scripts": [{% def content_script(activation) %}
+		{
+			"matches": ${json.dumps(activation.patterns)}
+			, "js": ${json.dumps(["forge/app_config.js", "forge/all.js"] + activation.scripts)}
+{% if activation.has_key("styles") %}\
+			, "css": ${json.dumps(activation.styles)}
+{% end if activation.has_key("styles") %}\
+{% if activation.has_key("run_at") %}\
+			, "run_at": ${json.dumps(get_run_at(activation.run_at))}
+{% end if activation.has_key("run_at") %}\
+{% if not activation.has_key("run_at") %}\
+			, "run_at": "document_idle"
+{% end if not activation.has_key("run_at") %}\
+{% if activation.has_key("all_frames") %}\
+			, "all_frames": ${json.dumps(activation.all_frames)}
+{% end if activation.has_key("all_frames") %}\
+{% if not activation.has_key("all_frames") %}\
+			, "all_frames": false
+{% end if not activation.has_key("all_frames") %}\
+		}
+{% end def content_script%}\
+${content_script(plugins['activations']['config']['activations'][0])}{% for activation in plugins['activations']['config']['activations'][1:] %},
+${content_script(activation)}{% end for %}\
+	]{% end if %}{% if 'icons' in plugins and 'chrome' in plugins['icons']['config'] %},
+	"icons": ${json.dumps(plugins['icons']['config']['chrome'])}{% end if icons.config.chrome in plugins %}{% if "button" in plugins and "config" in plugins["button"] %},
+	"browser_action": ${json.dumps(clean_browser_action(plugins['button']['config']))}{% end if %}{% end %}{% if "update_url" in plugins and "config" in plugins["update_url"] and "chrome" in plugins["update_url"]["config"] %},
+	"update_url": ${json.dumps(plugins["update_url"]["config"]["chrome"])} {% end defined('update_url') and "chrome" in update_url %},
+	"manifest_version": 2
+}

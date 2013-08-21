@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{80ab0493-f909-4110-a2aa-65f3377507c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json_spirit">
+      <UniqueIdentifier>{34dd5d1c-45d5-4f42-b682-1999ae9044c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{9b6c3525-031f-422b-be3e-48923e5f179c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{0fb68582-098f-4a43-8d97-bd6f38c58e0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="md5">
+      <UniqueIdentifier>{8329cefd-0cad-444f-b7cd-b57528c76af4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{b6b2e1ec-897e-4466-b097-02bc8142ce4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="proxy">
+      <UniqueIdentifier>{bc3acd76-b1d7-408e-8554-367d45a0ecac}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\build\generated\BHO_i.c">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\json_spirit\json_spirit_reader.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\json_spirit\json_spirit_value.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\json_spirit\json_spirit_writer.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ScriptExtensions.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\bho\UpdateManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\bho\BrowserHelperObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\bho\dllexports.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\bho\dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\bho\FeedbackDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\bho\Registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\bho\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Logger.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\build\generated\Forge_i.c">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\HTTP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Attach.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\boost\md5.cpp">
+      <Filter>md5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\HTMLDocument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\AccessibleBrowser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\WindowsMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\proxy\FrameProxy.cpp">
+      <Filter>proxy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\proxy\Channel.cpp">
+      <Filter>proxy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\proxy\FrameServer.cpp">
+      <Filter>proxy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\proxy\Commands.cpp">
+      <Filter>proxy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\util.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\build\generated\BHO_h.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_reader.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_value.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_writer.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ScriptExtensions.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Logger.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\util.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\bho\UpdateManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\bho\BrowserHelperObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\bho\dllmain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\bho\FeedbackDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\bho\Registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\bho\Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\bho\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\bho\targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\build\generated\Forge_i.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\HTTP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Attach.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\boost\md5.hpp">
+      <Filter>md5</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\HTMLDocument.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\AccessibleBrowser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\WindowsMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\proxy\FrameProxy.h">
+      <Filter>proxy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\proxy\Channel.h">
+      <Filter>proxy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\proxy\FrameServer.h">
+      <Filter>proxy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\proxy\Commands.h">
+      <Filter>proxy</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\source\bho\BHO.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\source\bho\BrowserHelperObject.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\source\bho\dialog-question.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\source\bho\BHO.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\source\bho\BHO.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\source\bho\BHO.idl">
+      <Filter>Source Files</Filter>
+    </Midl>
+  </ItemGroup>
+</Project>

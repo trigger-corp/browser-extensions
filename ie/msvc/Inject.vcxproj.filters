@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\source\proxy\main.cpp" />
+    <ClCompile Include="..\source\Logger.cpp" />
+    <ClCompile Include="..\source\proxy\stdafx.cpp" />
+    <ClCompile Include="..\source\ScriptExtensions.cpp" />
+    <ClCompile Include="..\external\json_spirit\json_spirit_reader.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\json_spirit\json_spirit_value.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\json_spirit\json_spirit_writer.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\source\Logger.h" />
+    <ClInclude Include="..\source\util.h" />
+    <ClInclude Include="..\source\proxy\stdafx.h" />
+    <ClInclude Include="..\source\ScriptExtensions.h" />
+    <ClInclude Include="..\external\json_spirit\json_spirit.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_reader.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_value.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_writer.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="json_spirit">
+      <UniqueIdentifier>{0a5d1978-c0f3-44ec-ab81-49d3c7f42f31}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

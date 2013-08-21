@@ -1,0 +1,14 @@
+{
+	"config_version": "2",
+	"uuid": "moduletestapp",
+	"name": "Module test app",
+	"description": "Test application for modules",
+	"author": "Trigger.io",
+	"version": "1.0",
+	"platform_version": "default",
+	"modules": {
+		"logging": {
+			"level": "DEBUG"
+		}
+	}
+}

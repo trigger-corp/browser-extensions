@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{d4637a57-f2bf-44ce-9309-34b60e0b028b}</UniqueIdentifier>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{f8d8592f-a3f1-447f-8930-2ce42986acca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json_spirit">
+      <UniqueIdentifier>{8910d6f8-8a6d-4a62-882a-daa9be220d5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="proxy">
+      <UniqueIdentifier>{f8ff293e-ff18-446f-85cc-f77f196f9778}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\forge\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\xdlldata.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\build\generated\Forge_i.c">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\NativeMessaging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\NativeExtensions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Logger.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ScriptExtensions.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\json_spirit\json_spirit_reader.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\json_spirit\json_spirit_value.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\json_spirit\json_spirit_writer.cpp">
+      <Filter>json_spirit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\dllexports.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\Preferences.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\HTTP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\NativeMessagingTypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\NativeBackground.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\BrowserWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Attach.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\HTMLDocument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\AccessibleBrowser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\NotificationWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\NativeControls.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\BrowserControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\forge\PopupWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\WindowsMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\proxy\Channel.cpp">
+      <Filter>proxy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\proxy\FrameServer.cpp">
+      <Filter>proxy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\proxy\FrameProxy.cpp">
+      <Filter>proxy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\proxy\Commands.cpp">
+      <Filter>proxy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\util.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\source\forge\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\dllmain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\xdlldata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\build\generated\Forge_i.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\NativeMessaging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\_INativeExtensionsEvents_CP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\_INativeMessagingEvents_CP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\NativeExtensions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\util.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ScriptExtensions.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Logger.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_reader.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_value.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\json_spirit\json_spirit_writer.h">
+      <Filter>json_spirit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\Preferences.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\HTTP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\NativeMessagingTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\_INativeBackgroundEvents_CP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\NativeBackground.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\BrowserWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Attach.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\HTMLDocument.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\AccessibleBrowser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\NotificationWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\NativeControls.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\BrowserControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\forge\PopupWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\WindowsMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\proxy\Channel.h">
+      <Filter>proxy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\proxy\FrameProxy.h">
+      <Filter>proxy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\proxy\FrameServer.h">
+      <Filter>proxy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\proxy\Commands.h">
+      <Filter>proxy</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\source\forge\Forge.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\source\forge\ReadMe.txt" />
+    <None Include="..\source\forge\Forge.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\source\forge\Forge.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\source\forge\NativeMessaging.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\source\forge\NativeExtensions.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\source\forge\NativeBackground.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\source\forge\NativeControls.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\source\forge\Forge.idl">
+      <Filter>Source Files</Filter>
+    </Midl>
+  </ItemGroup>
+</Project>
