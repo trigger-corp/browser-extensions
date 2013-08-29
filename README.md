@@ -43,11 +43,11 @@ Installation
 
 ### Clone Repo:
 
-    hg clone <TODO repo url>
+    git clone https://github.com/trigger-corp/browser-extensions.git browser-extensions.git
 
 ### Create Python Environment:
 
-    cd platform.hg
+    cd browser-extensions.git
     virtualenv --no-site-packages ./python-env
 
 ### Activate Python Environment (Unix):
