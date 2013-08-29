@@ -197,6 +197,7 @@ def add_primary_options(parser):
 	parser.add_argument('-v', '--verbose', action='store_true')
 	parser.add_argument('-q', '--quiet', action='store_true')
 	parser.add_argument('--username', help='your email address')
+	parser.add_argument('--password', help='your password')
 	parser.add_argument('-d', '--development', action='store_true', help="don't minify library files")
 
 def handle_primary_options(args):
