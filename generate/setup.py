@@ -21,7 +21,7 @@ setup(name='generate',
     ],
     entry_points={
         'console_scripts': [
-            'forge = build_tools.main:main',
+            'forge-extension = build_tools.main:main',
             'forge-generate = generate.main:main',
             'forge-module-test-app = internal.generate_module_test_app:main'
         ]
