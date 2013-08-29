@@ -1,4 +1,5 @@
-\.DS_Store
+.DS_Store
+.DS_Store?
 chrome/common
 firefox/content/common
 generate/generate\.egg-info/
@@ -6,13 +7,12 @@ generate/build/
 generate/dist
 generate/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}
 ^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}
-\.pyc$
-\.komodoproject
+*.pyc
+.komodoproject
 nbproject/
 python-env/
 builds/
 system_config.json
-syntax: glob
 ie/msvc/ForgeIE.suo
 user.*
 .emacs.desktop
