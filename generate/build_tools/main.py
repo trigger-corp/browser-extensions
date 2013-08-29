@@ -69,7 +69,7 @@ def command_create():
 
 def command_build(target=None):
 	if target is None:
-		LOG.error("Target required for 'forge build', e.g. 'forge build chrome'")
+		LOG.error("Target required for 'forge-extension build', e.g. 'forge-extension build chrome'")
 		return
 	(config, config_tmp) = app_config()
 	args = [
@@ -105,7 +105,7 @@ def command_build(target=None):
 def command_package(target=None):
 	print "package"
 	if target is None:
-		LOG.error("Target required for 'forge package', e.g. 'forge build chrome'")
+		LOG.error("Target required for 'forge-extension package', e.g. 'forge-extension build chrome'")
 		return
 	(config, config_tmp) = app_config()
 	args = [
@@ -201,7 +201,7 @@ def add_primary_options(parser):
 
 def handle_primary_options(args):
 	'Parameterise our option based on common command-line arguments'
-	parser = argparse.ArgumentParser(prog='forge', add_help=False)
+	parser = argparse.ArgumentParser(prog='forge-extension', add_help=False)
 	add_primary_options(parser)
 
 	handled_args, other_args = parser.parse_known_args(args)

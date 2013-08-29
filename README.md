@@ -81,17 +81,17 @@ Using Forge
 
 Create a directory for your extension, change into it and then run:
 
-    forge create
+    forge-extension create
 
 ### Building an extension:
 
-    forge build <platform>
+    forge-extension build <platform>
     
 Where `<platform>` is one of `chrome`, `safari`, `firefox` or `ie`
 
 ### Packaging an extension:
 
-    forge package <platform>
+    forge-extension package <platform>
 
 Where `<platform>` is one of `chrome`, `safari`, `firefox` or `ie`
 
