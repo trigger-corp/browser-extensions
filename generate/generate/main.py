@@ -180,7 +180,7 @@ def main():
 		user_config_file = path.abspath(path.join(usercode, configfile_default))
 	else:
 		parser.error("User config file must exist")
-		
+
 	# Load config.json
 	with open(user_config_file) as opened_user_config_file:
 		loaded_config = json.load(opened_user_config_file)
@@ -216,8 +216,9 @@ def main():
 		shutil.rmtree(output, ignore_errors=False)
 
 	local_config = {}
-	if path.isfile("local_config.json"):
-		with open("local_config.json") as local_config_file:
+	local_config_path = path.abspath(path.join(usercode, "..", "local_config.json"))
+	if path.isfile(local_config_path):
+		with open(local_config_path) as local_config_file:
 			local_config = json.load(local_config_file)
 
 	generator = WMGenerator(loaded_config, args.source, output,
