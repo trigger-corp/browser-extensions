@@ -26,7 +26,7 @@
 			"_order": 2
 		},
 		"platform_version": {
-			"required": true, 
+			"required": false, 
 			"type": "string", 
 			"description": "The Forge platform level this application should be built against, most of the time you will not need to manually change this option.",
 			"_order": 6
