@@ -78,9 +78,10 @@ def command_build(target=None):
 		'-c', config_tmp,
 		'-u', path.abspath('src'),
 		'--remove_attribution', '1',
-		'-r', # replace existing output directory if it already exists
-		'-p'  # minify library files for customer distribution	
+		'-r' # replace existing output directory if it already exists
 	]
+	if not forge.settings['development']:
+		args.append('-p') # minify library files for customer distribution
 
 	# safari output name differs from target
 	if target == "safari":
@@ -113,9 +114,10 @@ def command_package(target=None):
 		'-c', config_tmp,
 		'-u', path.abspath('src'),
 		'--remove_attribution', '1',
-		'-r', # replace existing output directory if it already exists
-		'-p'  # minify library files for customer distribution	
+		'-r' # replace existing output directory if it already exists
 	]
+	if not forge.settings['development']:
+		args.append('-p') # minify library files for customer distribution	
 
 	with cd(platform_dir):
 		if path.exists(config['uuid']): # clean up any broken builds
@@ -195,6 +197,7 @@ def add_primary_options(parser):
 	parser.add_argument('-v', '--verbose', action='store_true')
 	parser.add_argument('-q', '--quiet', action='store_true')
 	parser.add_argument('--username', help='your email address')
+	parser.add_argument('-d', '--development', action='store_true', help="don't minify library files")
 
 def handle_primary_options(args):
 	'Parameterise our option based on common command-line arguments'
@@ -207,6 +210,7 @@ def handle_primary_options(args):
 	forge.settings['verbose'] = bool(handled_args.verbose)
 	forge.settings['quiet'] = bool(handled_args.quiet)
 	forge.settings['username'] = handled_args.username
+	forge.settings['development'] = handled_args.development
 
 	try:
 		setup_logging(forge.settings)
