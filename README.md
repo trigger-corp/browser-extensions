@@ -1,4 +1,3 @@
-
 Dependencies
 ------------
 
@@ -63,6 +62,7 @@ Installation
     cd generate
     pip install -r requirements.txt
     python setup.py develop
+    cd ..
   
 
 
