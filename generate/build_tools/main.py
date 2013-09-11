@@ -25,7 +25,7 @@ from generate import main as forge_generate
 
 LOG = logging.getLogger(__name__)
 ERROR_LOG_FILE = os.path.join(os.getcwd(), 'forge-error.log')
-ENTRY_POINT_NAME = 'forge'
+ENTRY_POINT_NAME = 'forge-extension'
 
 def command_create():
 	if os.path.exists(defaults.SRC_DIR):
