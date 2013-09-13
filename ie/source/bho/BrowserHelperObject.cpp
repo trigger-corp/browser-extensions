@@ -379,6 +379,9 @@ void __stdcall CBrowserHelperObject::OnNavigateComplete2(IDispatch *dispatch,
     CComBSTR bstr;
     webBrowser2->get_LocationURL(&bstr); 
     wstring location(bstr);
+	if (location == L"" && url->bstrVal) { // get_LocationURL fails in the most egregious of ways
+		location = url->bstrVal;
+	}
 
     // match location against manifest 
     Manifest::pointer manifest = _AtlModule.moduleManifest;
@@ -419,11 +422,14 @@ void __stdcall CBrowserHelperObject::OnDocumentComplete(IDispatch *dispatch,
     CComBSTR bstr;
     webBrowser2->get_LocationURL(&bstr); 
     wstring location(bstr);
-	if (location == L"" && url->bstrVal == NULL) { // get_LocationURL fails in the most egregious of ways
+	if (location == L"" && url->bstrVal) { // get_LocationURL fails in the most egregious of ways
+		location = url->bstrVal;
+	}
+	if (location == L"" && url->bstrVal == NULL) {
         logger->debug(L"BrowserHelperObject::OnDocumentComplete2 "
 					  L"blank location, not interested"
                       L" -> " + manifest->uuid +
-					  L" -> " + (url->bstrVal ? url->bstrVal : L"NULL"));
+					  L" -> " + location);
 		return;
 	}
 
