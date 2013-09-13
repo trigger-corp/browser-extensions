@@ -78,4 +78,5 @@ def package_firefox(build):
 				abspath = os.path.join(dirpath, filename)
 				LOG.info('Adding: %s' % abspath)
 				zipf.write(abspath)
+		zipf.close()
 	shutil.move(path.join(development_dir, xpi_filename), path.join(release_dir, xpi_filename))
