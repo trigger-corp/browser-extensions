@@ -1,4 +1,4 @@
-/* global forge, internal */
+/* global forge, internal, safe_jparse, safe_jstringify */
 
 /**
  * api-ie.js
@@ -13,7 +13,8 @@
  *      script makes foreground API calls
  */
 var window_extensions = window.extensions;
-
+var window_messaging = window.messaging;
+var window_accessible = window.accessible;
 
 /**
  * debug logger
@@ -92,7 +93,7 @@ forge.message.listen = function(type, callback, error) {
 		   " -> " + typeof error);*/
 
 	var tabId = window_extensions.get_tabId();
-	window.messaging.fg_listen(forge.config.uuid, tabId, type, function(content, reply) {
+	window_messaging.fg_listen(forge.config.uuid, tabId, type, function(content, reply) {
 		callback(safe_jparse(content), function(content) {
 			reply(safe_jstringify(content));
 		});
@@ -127,7 +128,7 @@ forge.message.broadcastBackground = function(type, content, callback, error) {
 		   " -> " + typeof callback +
 		   " -> " + typeof error);*/
 
-	window.messaging.fg_broadcastBackground(forge.config.uuid, type,
+	window_messaging.fg_broadcastBackground(forge.config.uuid, type,
 											safe_jstringify(content),
 											function(content) {
 												callback(safe_jparse(content));
@@ -162,7 +163,7 @@ forge.message.broadcast = function(type, content, callback, error) {
 		   " -> " + typeof callback +
 		   " -> " + typeof error);*/
 
-	window.messaging.fg_broadcast(forge.config.uuid, type,
+	window_messaging.fg_broadcast(forge.config.uuid, type,
 								  safe_jstringify(content),
 								  function(content) {
 									  callback(safe_jparse(content));
@@ -190,7 +191,7 @@ forge.message.toFocussed = function(type, content, callback, error) {
 		   " -> " + typeof callback +
 		   " -> " + typeof error);*/
 
-	window.messaging.fg_toFocussed(forge.config.uuid, type,
+	window_messaging.fg_toFocussed(forge.config.uuid, type,
 								   safe_jstringify(content),
 								   function(content) {
 									   callback(safe_jparse(content));
@@ -203,7 +204,7 @@ forge.message.toFocussed = function(type, content, callback, error) {
  * @param {function({message: string}=} error
  */
 forge.tabs.closeCurrent = function(error) {
-	window.accessible.closeCurrent(typeof error === "function"
+	window_accessible.closeCurrent(typeof error === "function"
 								   ? error : function(){});
 };
 
@@ -214,7 +215,7 @@ forge.tabs.open = function(url, selected, success, error) {
 		selected = false;
 	}
 
-	window.accessible.open(url, selected,
+	window_accessible.open(url, selected,
 						   typeof success === "function" ? success : function(){},
 						   typeof error   === "function" ? error   : function(){});
 };
