@@ -66,7 +66,7 @@ def package_firefox(build):
 		os.makedirs(release_dir)
 
 	xpi_filename = '{name}.xpi'.format(name=build.config['xml_safe_name'])
-	IGNORED_FILES = ['.hgignore', '.DS_Store', 'install.rdf',
+	IGNORED_FILES = ['.hgignore', '.DS_Store',
 					 'application.ini', xpi_filename]
 
 	with cd(development_dir):
