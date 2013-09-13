@@ -1,26 +1,36 @@
+/* global forge, internal */
+
 /**
  * api-ie.js
- * 
+ *
  * IE specific overrides to the generic Forge api.js
  */
+
+
+/**
+ * TODO preserve window extensions as a global as it appears to
+ *      vanishes from closure contexts when a second foreground 
+ *      script makes foreground API calls
+ */
+var window_extensions = window.extensions;
 
 
 /**
  * debug logger
  */
 function logger(message) {
-    window.extensions.log("api-ie.js", message);
-};
+	window_extensions.log("api-ie.js", message);
+}
 
 
 /**
- * console.log|error|debug 
+ * console.log|error|debug
  */
 function fallbackLogger(level) {
-    return function(message) {
-        window.extensions.log("fallback-" + level, message);
-    };
-};
+	return function(message) {
+		window_extensions.log("fallback-" + level, message);
+	};
+}
 window.console = (window.console ? window.console : {});
 window.console.log   = (window.console.log ? window.console.log : fallbackLogger("log"));
 window.console.error = (window.console.error ? window.console.error : fallbackLogger("error"));
@@ -31,11 +41,11 @@ window.console.debug = (window.console.debug ? window.console.debug : fallbackLo
  * Identity
  */
 forge.is.desktop = function() {
-    return true;
+	return true;
 };
 
 forge.is.ie = function() {
-    return true;
+	return true;
 };
 
 
@@ -48,9 +58,9 @@ forge.is.ie = function() {
  * {Object} params Key-values to pass to Android
  */
 internal.priv.send = function(data) {
-    forge.message.broadcastBackground("bridge", data, function(reply) {
-        internal.priv.receive(reply);
-    });
+	forge.message.broadcastBackground("bridge", data, function(reply) {
+		internal.priv.receive(reply);
+	});
 };
 
 
@@ -64,29 +74,29 @@ internal.priv.send = function(data) {
  * @param {Function} errorCallback Not used.
  */
 forge.message.listen = function(type, callback, error) {
-    if (typeof type === 'function') { 
-        // no type passed in: shift arguments left one
-        error = callback;
-        callback = type;
-        type = null;
-    }
-    type = (type === null ? "*" : type);
-    if (typeof callback !== 'function') callback = function(){};
-    if (typeof error !== 'function') error = function(e) {
-        logger("forge.message.listen error -> " + e);
-    };
-    /*logger("forge.message.listen" +
-           " -> " + forge.config.uuid +
-           " -> " + type +
-           " -> " + typeof callback +
-           " -> " + typeof error);*/
+	if (typeof type === 'function') {
+		// no type passed in: shift arguments left one
+		error = callback;
+		callback = type;
+		type = null;
+	}
+	type = (type === null ? "*" : type);
+	if (typeof callback !== 'function') callback = function(){};
+	if (typeof error !== 'function') error = function(e) {
+		logger("forge.message.listen error -> " + e);
+	};
+	/*logger("forge.message.listen" +
+		   " -> " + forge.config.uuid +
+		   " -> " + type +
+		   " -> " + typeof callback +
+		   " -> " + typeof error);*/
 
-    var tabId = window.extensions.get_tabId();
-    window.messaging.fg_listen(forge.config.uuid, tabId, type, function(content, reply) {
-        callback(safe_jparse(content), function(content) {
-            reply(safe_jstringify(content));
-        });
-    }, error);
+	var tabId = window_extensions.get_tabId();
+	window.messaging.fg_listen(forge.config.uuid, tabId, type, function(content, reply) {
+		callback(safe_jparse(content), function(content) {
+			reply(safe_jstringify(content));
+		});
+	}, error);
 };
 
 
@@ -98,30 +108,30 @@ forge.message.listen = function(type, callback, error) {
  * @param {Function} callback Reply function which will be invoked if any listeners reply.
  */
 forge.message.broadcastBackground = function(type, content, callback, error) {
-    if (typeof(type) === 'function') { 
-        // no type passed in: shift arguments left one
-        error = callback;
-        callback = content;
-        content = type;
-        type = null;
-    } 
-    type = (type === null ? "*" : type);   
-    if (typeof callback !== 'function') callback = function(){};
-    if (typeof error !== 'function') error = function(e) {
-        logger("forge.message.broadcastBackground error -> " + e);
-    };
-    /*logger("forge.message.broadcastBackground" +
-           " -> " + forge.config.uuid +
-           " -> " + type +
-           " -> " + safe_jstringify(content) +
-           " -> " + typeof callback +
-           " -> " + typeof error);*/
+	if (typeof(type) === 'function') {
+		// no type passed in: shift arguments left one
+		error = callback;
+		callback = content;
+		content = type;
+		type = null;
+	}
+	type = (type === null ? "*" : type);
+	if (typeof callback !== 'function') callback = function(){};
+	if (typeof error !== 'function') error = function(e) {
+		logger("forge.message.broadcastBackground error -> " + e);
+	};
+	/*logger("forge.message.broadcastBackground" +
+		   " -> " + forge.config.uuid +
+		   " -> " + type +
+		   " -> " + safe_jstringify(content) +
+		   " -> " + typeof callback +
+		   " -> " + typeof error);*/
 
-    window.messaging.fg_broadcastBackground(forge.config.uuid, type, 
-                                            safe_jstringify(content),
-                                            function(content) {
-                                                callback(safe_jparse(content));
-                                            }, error);
+	window.messaging.fg_broadcastBackground(forge.config.uuid, type,
+											safe_jstringify(content),
+											function(content) {
+												callback(safe_jparse(content));
+											}, error);
 };
 
 
@@ -133,58 +143,58 @@ forge.message.broadcastBackground = function(type, content, callback, error) {
  * @param {Function} callback Reply function which will be invoked if any listeners reply.
  */
 forge.message.broadcast = function(type, content, callback, error) {
-    if (typeof(type) === 'function') { 
-        // no type passed in: shift arguments left one
-        error = callback;
-        callback = content;
-        content = type;
-        type = null;
-    } 
-    type = (type === null ? "*" : type);   
-    if (typeof callback !== 'function') callback = function(){};
-    if (typeof error !== 'function') error = function(e) {
-        logger("forge.message.broadcast error -> " + e);
-    };
-    /*logger("forge.message.broadcast" +
-           " -> " + forge.config.uuid +
-           " -> " + type +
-           " -> " + content +
-           " -> " + typeof callback +
-           " -> " + typeof error);*/
+	if (typeof(type) === 'function') {
+		// no type passed in: shift arguments left one
+		error = callback;
+		callback = content;
+		content = type;
+		type = null;
+	}
+	type = (type === null ? "*" : type);
+	if (typeof callback !== 'function') callback = function(){};
+	if (typeof error !== 'function') error = function(e) {
+		logger("forge.message.broadcast error -> " + e);
+	};
+	/*logger("forge.message.broadcast" +
+		   " -> " + forge.config.uuid +
+		   " -> " + type +
+		   " -> " + content +
+		   " -> " + typeof callback +
+		   " -> " + typeof error);*/
 
-    window.messaging.fg_broadcast(forge.config.uuid, type, 
-                                  safe_jstringify(content), 
-                                  function(content) {
-                                      callback(safe_jparse(content));
-                                  }, error);
+	window.messaging.fg_broadcast(forge.config.uuid, type,
+								  safe_jstringify(content),
+								  function(content) {
+									  callback(safe_jparse(content));
+								  }, error);
 };
 
 
 forge.message.toFocussed = function(type, content, callback, error) {
-    if (typeof(type) === 'function') { 
-        // no type passed in: shift arguments left one
-        error = callback;
-        callback = content;
-        content = type;
-        type = null;
-    } 
-    type = (type === null ? "*" : type);   
-    if (typeof callback !== 'function') callback = function(){};
-    if (typeof error !== 'function') error = function(e) {
-        logger("forge.message.toFocussed error -> " + e);
-    };
-    /*logger("forge.message.toFocussed" +
-           " -> " + forge.config.uuid +
-           " -> " + type +
-           " -> " + content +
-           " -> " + typeof callback +
-           " -> " + typeof error);*/
+	if (typeof(type) === 'function') {
+		// no type passed in: shift arguments left one
+		error = callback;
+		callback = content;
+		content = type;
+		type = null;
+	}
+	type = (type === null ? "*" : type);
+	if (typeof callback !== 'function') callback = function(){};
+	if (typeof error !== 'function') error = function(e) {
+		logger("forge.message.toFocussed error -> " + e);
+	};
+	/*logger("forge.message.toFocussed" +
+		   " -> " + forge.config.uuid +
+		   " -> " + type +
+		   " -> " + content +
+		   " -> " + typeof callback +
+		   " -> " + typeof error);*/
 
-    window.messaging.fg_toFocussed(forge.config.uuid, type, 
-                                   safe_jstringify(content), 
-                                   function(content) {
-                                       callback(safe_jparse(content));
-                                   }, error);
+	window.messaging.fg_toFocussed(forge.config.uuid, type,
+								   safe_jstringify(content),
+								   function(content) {
+									   callback(safe_jparse(content));
+								   }, error);
 };
 
 
@@ -193,20 +203,20 @@ forge.message.toFocussed = function(type, content, callback, error) {
  * @param {function({message: string}=} error
  */
 forge.tabs.closeCurrent = function(error) {
-    window.accessible.closeCurrent(typeof error === "function" 
-                                   ? error : function(){});
+	window.accessible.closeCurrent(typeof error === "function"
+								   ? error : function(){});
 };
 
 forge.tabs.open = function(url, selected, success, error) {
-    if (typeof selected === 'function') {
-        error = success;
-        success = selected;
-        selected = false;
-    }
+	if (typeof selected === 'function') {
+		error = success;
+		success = selected;
+		selected = false;
+	}
 
-    window.accessible.open(url, selected, 
-                           typeof success === "function" ? success : function(){}, 
-                           typeof error   === "function" ? error   : function(){});
+	window.accessible.open(url, selected,
+						   typeof success === "function" ? success : function(){},
+						   typeof error   === "function" ? error   : function(){});
 };
 
 
@@ -214,7 +224,7 @@ forge.tabs.open = function(url, selected, success, error) {
  * Reload the current document and all its scripts
  */
 forge.document.reload = function() {
-    document.location.href = document.location.href;
+	document.location.href = document.location.href;
 };
 
 
@@ -222,8 +232,8 @@ forge.document.reload = function() {
  * Returns a location object for the current document
  */
 forge.document.location = function(success, error) {
-    if (!success) success = function() {};
-    var a = document.createElement('a');
-    a.href = window.extensions.get_location();
-    success(a);
+	if (!success) success = function() {};
+	var a = document.createElement('a');
+	a.href = window_extensions.get_location();
+	success(a);
 };
