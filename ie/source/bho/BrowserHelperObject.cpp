@@ -399,7 +399,7 @@ void __stdcall CBrowserHelperObject::OnNavigateComplete2(IDispatch *dispatch,
                   L" -> " + location);
 
 	// attach forge extensions
-	this->OnAttachForgeExtensions(dispatch, location);
+	this->OnAttachForgeExtensions(dispatch, location, L"OnNavigateComplete2");
 }
 
 
@@ -426,7 +426,7 @@ void __stdcall CBrowserHelperObject::OnDocumentComplete(IDispatch *dispatch,
 		location = url->bstrVal;
 	}
 	if (location == L"" && url->bstrVal == NULL) {
-        logger->debug(L"BrowserHelperObject::OnDocumentComplete2 "
+        logger->debug(L"BrowserHelperObject::OnDocumentComplete "
 					  L"blank location, not interested"
                       L" -> " + manifest->uuid +
 					  L" -> " + location);
@@ -436,7 +436,7 @@ void __stdcall CBrowserHelperObject::OnDocumentComplete(IDispatch *dispatch,
     // match location against manifest 
     std::pair<wstringvector, wstringvector> match = this->MatchManifest(webBrowser2, manifest, location);
     if (match.first.size() == 0 && match.second.size() == 0) {
-        logger->debug(L"BrowserHelperObject::OnDocumentComplete2 not interested"
+        logger->debug(L"BrowserHelperObject::OnDocumentComplete not interested"
                       L" -> " + manifest->uuid +
 					  L" -> " + wstring(url->bstrVal) +
                       L" -> " + location);
@@ -469,7 +469,7 @@ void __stdcall CBrowserHelperObject::OnDocumentComplete(IDispatch *dispatch,
 
 	// attach forge extensions when pages like target=_blank didn't trigger navComplete event
 	if (!m_isAttached) {
-		this->OnAttachForgeExtensions(dispatch, location);
+		this->OnAttachForgeExtensions(dispatch, location, L"OnDocumentComplete");
 	}
 
     // Inject styles
@@ -546,7 +546,8 @@ void __stdcall CBrowserHelperObject::OnDocumentComplete(IDispatch *dispatch,
  * Event: OnAttachForgeExtensions
  */
 void __stdcall CBrowserHelperObject::OnAttachForgeExtensions(IDispatch *dispatch, 
-															 const wstring& location)
+															 const wstring& location,
+															 const wstring& eventsource)
 {
 	m_isAttached = false;
 
@@ -559,7 +560,8 @@ void __stdcall CBrowserHelperObject::OnAttachForgeExtensions(IDispatch *dispatch
 
 	logger->debug(L"BrowserHelperObject::OnAttachForgeExtensions"
 				  L" -> " + boost::lexical_cast<wstring>(dispatch) +
-				  L" -> " + location);
+				  L" -> " + location +
+				  L" -> " + eventsource);
 
     Manifest::pointer manifest = _AtlModule.moduleManifest;
 

@@ -66,7 +66,8 @@ END_SINK_MAP()
     void __stdcall OnWindowStateChanged(DWORD flags, DWORD mask);
 
 	void __stdcall OnAttachForgeExtensions(IDispatch *idispatch, 
-										   const wstring& location);
+										   const wstring& location,
+										   const wstring& eventsource);
 
  private:
     HRESULT OnConnect(IUnknown *iunknown);
