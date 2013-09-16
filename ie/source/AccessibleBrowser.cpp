@@ -414,7 +414,7 @@ INTERFACEDATA NativeAccessible::Interface = {
 void __stdcall NativeAccessible::open(BSTR url, VARIANT_BOOL selected, 
                                       IDispatch *success, IDispatch *error)
 {
-    logger->debug(L"NativeTabs::open"
+    logger->debug(L"NativeAccessible::open"
                   L" -> " + wstring(url) +
                   L" -> " + boost::lexical_cast<wstring>(selected == -1) +
                   L" -> " + boost::lexical_cast<wstring>(success) +
@@ -469,7 +469,7 @@ void __stdcall NativeAccessible::open(BSTR url, VARIANT_BOOL selected,
  * @param error
  */
 void __stdcall NativeAccessible::closeCurrent(IDispatch *error) {
-    logger->debug(L"NativeTabs::closeCurrent"
+    logger->debug(L"NativeAccessible::closeCurrent"
                   L" -> " + boost::lexical_cast<wstring>(error));
     HRESULT hr;
     hr = m_webBrowser2->Quit();
