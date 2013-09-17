@@ -254,7 +254,7 @@ HRESULT button_onClickCommand::exec()
         BOOL visible = FALSE;
         HWND popup = NULL;
         hr = nativeControls->popup_hwnd(CComBSTR(this->uuid), &visible, (ULONG*)&popup);
-        if (FAILED(hr)) {
+        if (FAILED(hr) || !popup) {
             logger->error(L"button_onClickCommand::exec"
                           L"failed to invoke NativeControls::popup_hwnd"
                           L" -> " + logger->parse(hr));

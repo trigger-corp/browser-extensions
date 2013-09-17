@@ -255,6 +255,11 @@ LRESULT PopupWindow::OnSetFocus(UINT msg, WPARAM wparam, LPARAM lparam, BOOL& ha
 {
     HWND new_hwnd = reinterpret_cast<HWND>(wparam);
 
+	if (!new_hwnd) {
+		logger->debug(L"PopupWindow::OnSetFocus Ignoring event");
+		return S_OK;
+	}
+
     logger->debug(L"PopupWindow::OnSetFocus"
                   L" -> " + boost::lexical_cast<wstring>(new_hwnd));
 
