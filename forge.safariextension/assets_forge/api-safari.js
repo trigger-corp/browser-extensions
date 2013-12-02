@@ -34,7 +34,7 @@ safari.self.addEventListener("message", internal.dispatchMessage, false);
 
 internal.priv.send = function (data) {
 	if (safari.self.tab) {
-		safari.self.tab.dispatchMessage(('forge-bridge'+forge.config.uuid), data);
+		safari.self.tab.dispatchMessage(('forge-bridge'+forge.config.uuid), JSON.parse(JSON.stringify(data)));
 	} else {
 		// Being called within a popover, call the dispatch function directly
 		safari.extension.globalPage.contentWindow.forge._dispatchMessage({
