@@ -119,6 +119,8 @@ of the extension. Add the following to <app dir>/local_config.json to use the ke
 		LOG.info(key_msg)
 		return
 
+	# HACK: build.usercode seems to be the only way to get a reference to the app directory.
+	crx_key_file = path.realpath(path.join(build.usercode, '..', crx_key_path, crx_key))
 	crx_filename = '{name}.crx'.format(name=build.config['xml_safe_name'])
 	IGNORED_FILES = ['.hgignore', '.DS_Store',
 					 'application.ini', crx_filename]
@@ -136,8 +138,7 @@ of the extension. Add the following to <app dir>/local_config.json to use the ke
 		zipf.close()
 
 	# Generate signature
-	signature, pubkey = _generate_signature(path.join(development_dir, crx_filename),
-										    path.join(crx_key_path, crx_key))
+	signature, pubkey = _generate_signature(path.join(development_dir, crx_filename), crx_key_file)
 
 	# Combine magic, public key and signature into header and prepend to zip file
 	magic = 'Cr24'
