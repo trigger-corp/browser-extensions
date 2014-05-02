@@ -36,17 +36,17 @@ def package_ie(build, **kw):
 	
 	# JCB: need to check nsis version in stdout here?
 
-	# Figure out which signtool to use
-	signtool = _check_signtool(build)
-	if signtool == None:
-		raise CouldNotLocate("Make sure the 'signtool' or 'osslsigncode' executable is in your path")
-	LOG.info('Signing IE executables with: {signtool}'.format(signtool=signtool))	
-
 	# Sign executables
 	certificate = build.tool_config.get('ie.profile.developer_certificate')
 	certificate_path = build.tool_config.get('ie.profile.developer_certificate_path')
 	certificate_password = build.tool_config.get('ie.profile.developer_certificate_password')
 	if certificate:
+		# Figure out which signtool to use
+		signtool = _check_signtool(build)
+		if signtool == None:
+			raise CouldNotLocate("Make sure the 'signtool' or 'osslsigncode' executable is in your path")
+		LOG.info('Signing IE executables with: {signtool}'.format(signtool=signtool))	
+
 		_sign_app(build=build, 
 				  signtool=signtool,
 				  certificate=certificate, 
