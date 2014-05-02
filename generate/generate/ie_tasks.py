@@ -1,5 +1,6 @@
 import os
 from os import path
+import sys
 import shutil, glob
 import logging
 import uuid
@@ -18,8 +19,16 @@ class IEError(Exception):
 def package_ie(build, **kw):
 	'Sign executables, Run NSIS'
 	
-	# NSIS - TODO NSISDIR=../share/nsis ./makensis -VERSION etc.
-	nsis_check = lib.PopenWithoutNewConsole('makensis -VERSION', shell=True, stdout=PIPE, stderr=STDOUT)
+	# On OS X use the nsis executable and files we ship
+	if sys.platform.startswith('darwin'):
+		nsis_osx = os.path.realpath(os.path.join(os.path.dirname(__file__), '../lib/nsis_osx'))
+		nsis_cmd = 'NSISDIR={}/share/nsis PATH={}/bin/:$PATH makensis'.format(nsis_osx, nsis_osx)
+	else:
+		nsis_cmd = 'makensis'
+	LOG.debug("Using nsis command: {nsis_cmd}".format(nsis_cmd=nsis_cmd))	
+
+	nsis_check = lib.PopenWithoutNewConsole("{nsis_cmd} -VERSION".format(nsis_cmd=nsis_cmd), 
+											shell=True, stdout=PIPE, stderr=STDOUT)
 	stdout, stderr = nsis_check.communicate()
 	
 	if nsis_check.returncode != 0:
@@ -52,7 +61,8 @@ def package_ie(build, **kw):
 	for arch in ('x86', 'x64'):
 		nsi_filename = "setup-{arch}.nsi".format(arch=arch)
 		
-		package = lib.PopenWithoutNewConsole('makensis {nsi}'.format(
+		package = lib.PopenWithoutNewConsole('{nsis_cmd} {nsi}'.format(
+			nsis_cmd=nsis_cmd,
 			nsi=path.join(development_dir, "dist", nsi_filename)),
 			stdout=PIPE, stderr=STDOUT, shell=True
 		)
