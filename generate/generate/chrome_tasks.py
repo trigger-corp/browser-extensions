@@ -1,7 +1,8 @@
 from os import path
 import os
+import sys
 import logging
-from subprocess import PIPE, STDOUT
+from subprocess import PIPE, STDOUT, Popen
 import shutil
 import zipfile
 import struct
@@ -17,16 +18,56 @@ class ChromeError(Exception):
 def _chrome_folder():
 	return path.abspath(path.join(os.getcwd(), 'development', 'chrome'))
 
+
+def _windows_chrome_cmd():
+	if not sys.platform.startswith('win32'):
+		return None
+	suffix = '\\Google\\Chrome\\Application\\chrome.exe';
+	for envvar in ['LOCALAPPDATA', 'PROGRAMFILES', 'PROGRAMFILES(X86)']:
+		prefix = os.environ.get(envvar)
+		if prefix:
+			cmd = path.join(prefix, suffix)
+			if path.isfile(cmd):
+				return cmd
+	return None
+
+
 @task
 def run_chrome(build):
-	msg = """Currently it is not possible to launch a Chrome extension via this interface.
-The required steps are:
+	chrome_commands = {
+		'linux': 'google-chrome',
+		'darwin': '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+		'win32': _windows_chrome_cmd()
+	}
+
+	chrome_cmd = None
+	for platform, cmd in chrome_commands.items():
+		if sys.platform.startswith(platform) and cmd:
+			chrome_cmd = cmd
+			break
+
+	if not chrome_cmd:
+		msg = """Currently it is not possible to launch a Chrome extension for your platform
+with this interface. The required steps are:
 
 	1) Go to chrome:extensions in the Chrome browser
 	2) Make sure "developer mode" is on (top right corner)')
-	3) Use "Load unpacked extension" and select the folder: {chrome_folder}""".format(chrome_folder=_chrome_folder())
+	3) Use "Load unpacked extension" and select the folder: {chrome_folder}
+""".format(chrome_folder=_chrome_folder())
+		LOG.info(msg)
+		return
 
-	LOG.info(msg)
+	with lib.temp_dir() as user_data_dir:
+		LOG.info("Chome user data directory: {}".format(user_data_dir))
+		development_dir = path.realpath(path.join("development", "chrome"))
+		LOG.info("Extension will be loaded from: {}".format(development_dir))
+		chrome = Popen([chrome_cmd,
+						'--args',
+						'--load-extension={}'.format(development_dir),
+						'--user-data-dir={}'.format(user_data_dir),
+						'--no-default-browser-check',
+						'--no-first-run'])
+		chrome.wait()
 
 
 @task
