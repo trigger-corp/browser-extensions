@@ -106,8 +106,20 @@ def _uuid_to_ms_clsid(build):
 
 
 def _check_signtool(build):
-	# TODO use appropriate osslsigncode in generate/lib for platform
-	for option in ["signtool /?", "osslsigncode -v"]:
+	options = ["signtool /?", "osslsigncode -v"]
+
+	# Note: The follow code can be uncommented once osslsigncode_osx has been rebuilt to work
+	#       on stock OS X. At the moment it is dynamically linked against 
+	#       /opt/local/lib/libcrypto.1.0.0.dylib which is not part of the OS and probably a 
+	#       homebrew library. The system libcrypto is at /usr/lib/libcrypto.dylib
+	#
+	# lib_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../lib'))
+	# if sys.platform.startswith('darwin'):
+	# 	options.append('{lib_dir}/osslsigncode_osx -v'.format(lib_dir=lib_dir))
+	# elif sys.platform.startswith('linux'):
+	# 	options.append('{lib_dir}/osslsigncode_linux -v'.format(lib_dir=lib_dir))
+
+	for option in options:
 		LOG.info("Checking: %s", option[:-3])	
 		check = lib.PopenWithoutNewConsole(option, shell=True, stdout=PIPE, stderr=STDOUT)
 		stdout, stderr = check.communicate()
