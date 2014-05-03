@@ -96,9 +96,9 @@ Section
         File "noarch\forge.ico"
         File "..\manifest.json"
         File "..\forge.html"
-        File /r /x .hg /x certificates "..\src"
+        File /r /x .hg /x certificates /x .DS_Store "..\src"
         SetOutPath "$$INSTDIR\forge"
-        File /r "..\forge\*.*"
+        File /r /x .DS_Store "..\forge\*.*"
         SetOutPath "$$INSTDIR"   
 
         ; frame injection - x64
