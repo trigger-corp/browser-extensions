@@ -22,7 +22,7 @@ def _chrome_folder():
 def _windows_chrome_cmd():
 	if not sys.platform.startswith('win32'):
 		return None
-	suffix = '\\Google\\Chrome\\Application\\chrome.exe';
+	suffix = 'Google\\Chrome\\Application\\chrome.exe';
 	for envvar in ['LOCALAPPDATA', 'PROGRAMFILES', 'PROGRAMFILES(X86)']:
 		prefix = os.environ.get(envvar)
 		if prefix:
