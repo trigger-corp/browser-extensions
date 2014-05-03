@@ -67,7 +67,12 @@ with this interface. The required steps are:
 						'--user-data-dir={}'.format(user_data_dir),
 						'--no-default-browser-check',
 						'--no-first-run'])
-		chrome.wait()
+		try:
+			chrome.wait()
+		except KeyboardInterrupt:
+			# Kill Chrome and wait until it's gone before erasing the temporary user data dir.
+			chrome.terminate()
+			chrome.wait()
 
 
 @task
