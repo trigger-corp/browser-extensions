@@ -67,16 +67,30 @@ bool FrameProxy::InjectDLL(HINSTANCE instance, DWORD processId)
     if (!::CreateProcess(path.wstring().c_str(), params, 
                          NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, 
                          &startupInfo, &processInfo)) {
-        logger->debug(L"FrameProxy::InjectDLL failed to create process"
+        logger->error(L"FrameProxy::InjectDLL failed to create process"
                       L" -> " + path.wstring());
         return false;
     }
     
     ::WaitForSingleObject(processInfo.hProcess, INFINITE);
     
+    DWORD exitCode = 0;
+    if (!::GetExitCodeProcess(processInfo.hProcess, &exitCode)) {
+        DWORD error = ::GetLastError();
+        logger->warn(L"FrameProxy::InjectDLL failed to get process exit code"
+                     L" -> " + boost::lexical_cast<wstring>(error));
+        exitCode = 0; // TODO: Should this be an error?
+    }
+
     ::CloseHandle(processInfo.hThread);
     ::CloseHandle(processInfo.hProcess);
     
+    if (exitCode != 0) {
+        logger->error(L"FrameProxy::InjectDLL spawned process failed"
+                      L" -> " + boost::lexical_cast<wstring>(exitCode));
+        return false;
+    }
+
     return true;
 }
 
