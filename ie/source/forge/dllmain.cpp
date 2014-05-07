@@ -54,7 +54,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
                   L" -> " + boost::lexical_cast<wstring>(instance) +
                   L" -> " + boost::lexical_cast<wstring>(reason) +
                   L" -> " + boost::lexical_cast<wstring>(reserved) +
-                  L"Forge::DllMain -> " + _AtlModule.moduleExec.wstring());
+                  L" -> " + _AtlModule.moduleExec.wstring());
     
     // attach
     try {

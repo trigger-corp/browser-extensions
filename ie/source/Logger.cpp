@@ -93,7 +93,7 @@ std::wstring Logger::parse(HRESULT hr)
     ::LocalFree(reinterpret_cast<HLOCAL>(buf));
     
     std::wstringstream hrhex;
-    hrhex << L"0x" << std::hex << hr << '\0';
+    hrhex << L"0x" << std::hex << hr;
     
     return hrhex.str() + L" -> " + hrstr;
 }
