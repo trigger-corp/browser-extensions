@@ -1,5 +1,16 @@
+OpenForge
+=========
+
+Build and run cross-platform browser extensions from one codebase.
+
+Please see the [introductory blog post][intro-blog] for details on the
+history of this project.
+
+
+
 Dependencies
 ------------
+
 
 ### Ubuntu
 
@@ -8,19 +19,21 @@ Dependencies
 * Git: `sudo apt-get install git`
 * Java Runtime: `sudo apt-get install default-jre`
 * NSIS: `sudo apt-get install nsis` (Only needed if you want to do IE builds)
-  
+
 ### OSX:
+
 * Python dependencies: `sudo easy_install pip virtualenv`
 * Mercurial: [http://mercurial.selenic.com](http://mercurial.selenic.com)
 * Git: [http://git-scm.com](http://git-scm.com)
 
 ### Windows::
+
 * Python 2.7.5: [http://www.python.org/ftp/python/2.7.5/python-2.7.5.msi](http://www.python.org/ftp/python/2.7.5/python-2.7.5.msi)
-   
+
   Add the following paths: (Control Panel -> System -> Advanced -> Environment Variables)
-    
+
       C:\Python27;C:\Python27\Scripts
-	  
+
 * Python setuptools: [https://pypi.python.org/pypi/setuptools/1.0#windows](https://pypi.python.org/pypi/setuptools/1.0#windows)
 * Python dependencies: `easy_install pip virtualenv`
 * Mercurial: [http://mercurial.selenic.com](http://mercurial.selenic.com)
@@ -30,9 +43,9 @@ Dependencies
 * NSIS: [http://nsis.sourceforge.net/](http://nsis.sourceforge.net/) (Version 2.46)
 
   Add the following paths: (Control Panel -> System -> Advanced -> Environment Variables)
-    
+
 	  C:\Program Files (x86)\NSIS
-	  
+
 * signtool: [http://msdn.microsoft.com/en-us/library/windows/desktop/aa387764(v=vs.85).aspx](http://msdn.microsoft.com/en-us/library/windows/desktop/aa387764\(v=vs.85\).aspx)
 
 
@@ -42,11 +55,11 @@ Installation
 
 ### Clone Repo:
 
-    git clone https://github.com/trigger-corp/browser-extensions.git browser-extensions.git
+    git clone https://github.com/trigger-corp/browser-extensions.git
 
 ### Create Python Environment:
 
-    cd browser-extensions.git
+    cd browser-extensions
     virtualenv --no-site-packages ./python-env
 
 ### Activate Python Environment (Unix):
@@ -63,11 +76,12 @@ Installation
     pip install -r requirements.txt
     python setup.py develop
     cd ..
-  
 
 
-Using Forge
------------
+
+Using OpenForge
+---------------
+
 
 ### Activate Python Environment (Unix):
 
@@ -86,7 +100,7 @@ Create a directory for your extension, change into it and then run:
 ### Building an extension:
 
     forge-extension build <platform>
-    
+
 Where `<platform>` is one of `chrome`, `safari`, `firefox` or `ie`
 
 ### Packaging an extension:
@@ -97,10 +111,13 @@ Where `<platform>` is one of `chrome`, `safari`, `firefox` or `ie`
 
 
 
-Testing Forge
--------------
+Testing OpenForge
+-----------------
 
 ### Generate test suites:
 
     forge-module-test-app -o ~/forge-workspace/v2automated/src -t automated all
     forge-module-test-app -o ~/forge-workspace/v2interactive/src -t interactive all
+
+<!-- Link -->
+   [intro-blog]: http://trigger.io/cross-platform-application-development-blog/2013/09/10/introducing-openforge-an-open-source-cross-platform-browser-add-on-framework/
