@@ -1,5 +1,6 @@
 import os
 from os import path
+import sys
 import shutil, glob
 import logging
 import uuid
@@ -18,8 +19,16 @@ class IEError(Exception):
 def package_ie(build, **kw):
 	'Sign executables, Run NSIS'
 	
-	# NSIS - TODO NSISDIR=../share/nsis ./makensis -VERSION etc.
-	nsis_check = lib.PopenWithoutNewConsole('makensis -VERSION', shell=True, stdout=PIPE, stderr=STDOUT)
+	# On OS X use the nsis executable and files we ship
+	if sys.platform.startswith('darwin'):
+		nsis_osx = os.path.realpath(os.path.join(os.path.dirname(__file__), '../lib/nsis_osx'))
+		nsis_cmd = 'NSISDIR={}/share/nsis PATH={}/bin/:$PATH makensis'.format(nsis_osx, nsis_osx)
+	else:
+		nsis_cmd = 'makensis'
+	LOG.debug("Using nsis command: {nsis_cmd}".format(nsis_cmd=nsis_cmd))	
+
+	nsis_check = lib.PopenWithoutNewConsole("{nsis_cmd} -VERSION".format(nsis_cmd=nsis_cmd), 
+											shell=True, stdout=PIPE, stderr=STDOUT)
 	stdout, stderr = nsis_check.communicate()
 	
 	if nsis_check.returncode != 0:
@@ -27,17 +36,17 @@ def package_ie(build, **kw):
 	
 	# JCB: need to check nsis version in stdout here?
 
-	# Figure out which signtool to use
-	signtool = _check_signtool(build)
-	if signtool == None:
-		raise CouldNotLocate("Make sure the 'signtool' or 'osslsigncode' executable is in your path")
-	LOG.info('Signing IE executables with: {signtool}'.format(signtool=signtool))	
-
 	# Sign executables
 	certificate = build.tool_config.get('ie.profile.developer_certificate')
 	certificate_path = build.tool_config.get('ie.profile.developer_certificate_path')
 	certificate_password = build.tool_config.get('ie.profile.developer_certificate_password')
 	if certificate:
+		# Figure out which signtool to use
+		signtool = _check_signtool(build)
+		if signtool == None:
+			raise CouldNotLocate("Make sure the 'signtool' or 'osslsigncode' executable is in your path")
+		LOG.info('Signing IE executables with: {signtool}'.format(signtool=signtool))	
+
 		_sign_app(build=build, 
 				  signtool=signtool,
 				  certificate=certificate, 
@@ -52,7 +61,8 @@ def package_ie(build, **kw):
 	for arch in ('x86', 'x64'):
 		nsi_filename = "setup-{arch}.nsi".format(arch=arch)
 		
-		package = lib.PopenWithoutNewConsole('makensis {nsi}'.format(
+		package = lib.PopenWithoutNewConsole('{nsis_cmd} {nsi}'.format(
+			nsis_cmd=nsis_cmd,
 			nsi=path.join(development_dir, "dist", nsi_filename)),
 			stdout=PIPE, stderr=STDOUT, shell=True
 		)
@@ -96,8 +106,20 @@ def _uuid_to_ms_clsid(build):
 
 
 def _check_signtool(build):
-	# TODO use appropriate osslsigncode in generate/lib for platform
-	for option in ["signtool /?", "osslsigncode -v"]:
+	options = ["signtool /?", "osslsigncode -v"]
+
+	# Note: The follow code can be uncommented once osslsigncode_osx has been rebuilt to work
+	#       on stock OS X. At the moment it is dynamically linked against 
+	#       /opt/local/lib/libcrypto.1.0.0.dylib which is not part of the OS and probably a 
+	#       homebrew library. The system libcrypto is at /usr/lib/libcrypto.dylib
+	#
+	# lib_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../lib'))
+	# if sys.platform.startswith('darwin'):
+	# 	options.append('{lib_dir}/osslsigncode_osx -v'.format(lib_dir=lib_dir))
+	# elif sys.platform.startswith('linux'):
+	# 	options.append('{lib_dir}/osslsigncode_linux -v'.format(lib_dir=lib_dir))
+
+	for option in options:
 		LOG.info("Checking: %s", option[:-3])	
 		check = lib.PopenWithoutNewConsole(option, shell=True, stdout=PIPE, stderr=STDOUT)
 		stdout, stderr = check.communicate()
