@@ -8,9 +8,9 @@
 ** boost-1.52.0
    copy into c:\dev\boost_1_52_0
    bootstrap.bat
-   .\b2 --build-type=complete --libdir=c:\dev\boost_1_52_0\stage\lib64 address-model=64
+   .\b2 --build-type=complete --with-filesystem --with-regex --libdir=c:\dev\boost_1_52_0\stage\lib64 address-model=64
    # Rename c:\dev\boost_1_52_0\stage\lib to c:\dev\boost_1_52_0\stage\lib64
-   .\b2 --build-type=complete --libdir=c:\dev\boost_1_52_0\stage\lib address-model=32
+   .\b2 --build-type=complete --with-filesystem --with-regex --libdir=c:\dev\boost_1_52_0\stage\lib address-model=32
 
 * building
 ** run in root directory:
