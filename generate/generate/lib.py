@@ -5,6 +5,7 @@ import shutil
 from os import error, listdir
 from os.path import join, isdir, islink
 import tempfile
+import codecs
 import subprocess
 import sys
 import logging
@@ -464,3 +465,24 @@ def filter_filenames(filenames, ignored_files=[".hgignore"]):
 
 def filter_dirnames(dirnames):
 	return [dirname for dirname in dirnames if dirname not in IGNORED_DIRS]
+
+# TODO: open_file and get_ignore_patterns_for_src are duplicated in the forge module.
+# They are probably not needed there anymore and can be removed?
+@contextmanager
+def open_file(*args, **kw):
+	'Simple wrapper around codecs.open for easier testing/mocking'
+	if 'encoding' not in kw:
+		kw['encoding'] = 'utf8'
+	yield codecs.open(*args, **kw)
+
+def get_ignore_patterns_for_src(src_dir):
+	"""Returns the set of match_patterns
+	:param src_dir: Relative path to src directory containing user's code
+	"""
+	try:
+		with open_file(os.path.join(src_dir, '.forgeignore')) as ignore_file:
+			ignores = map(lambda s: s.strip(), ignore_file.readlines())
+	except Exception:
+		ignores = []
+
+	return list(set(ignores))

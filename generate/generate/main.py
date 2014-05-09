@@ -21,6 +21,7 @@ import validictory
 
 from build import Build
 import customer_phases, legacy_phases, server_phases, customer_tasks, server_tasks, predicates, legacy_predicates
+from lib import get_ignore_patterns_for_src
 
 log = None
 
@@ -66,7 +67,7 @@ class WMGenerator(object):
 		if getattr(self.build, "debug", False):
 			self.build.add_steps(server_phases.copy_customer_source())
 			self.build.add_steps(customer_phases.validate_user_source())
-			self.build.add_steps(customer_phases.copy_user_source_to_template(debug=True))
+			self.build.add_steps(customer_phases.copy_user_source_to_template(ignore_patterns=self.build.ignore_patterns, debug=True))
 			self.build.add_steps(customer_phases.include_platform_in_html(debug=True))
 			self.build.add_steps(customer_phases.include_config(debug=True))
 			self.build.add_steps(server_phases.handle_debug_output())
@@ -77,7 +78,7 @@ class WMGenerator(object):
 				# TODO should this branch be handled by a predicate?
 				self.build.add_steps(server_phases.copy_customer_source())
 				self.build.add_steps(customer_phases.validate_user_source())
-				self.build.add_steps(customer_phases.copy_user_source_to_template())
+				self.build.add_steps(customer_phases.copy_user_source_to_template(ignore_patterns=self.build.ignore_patterns))
 				self.build.add_steps(customer_phases.include_platform_in_html())
 				self.build.add_steps(customer_phases.include_name())
 				self.build.add_steps(customer_phases.include_uuid())
@@ -224,7 +225,8 @@ def main():
 	generator = WMGenerator(loaded_config, args.source, output,
 		args.production, args.remove_attribution, usercode,
 		enabled_platforms=args.platforms, template_only=args.template,
-		test=args.test, local_config=local_config, override_plugins=args.override_plugins)
+		test=args.test, local_config=local_config, override_plugins=args.override_plugins,
+		ignore_patterns=get_ignore_patterns_for_src(usercode))
 	if 'debug' in args.sub_command:
 		generator.build.debug = True
 	elif 'build' not in args.sub_command:
