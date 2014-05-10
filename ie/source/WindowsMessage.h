@@ -4,7 +4,8 @@
 
 namespace WindowsMessage {
     // helpers
-    HWND   GetToolbar(HWND ieframe, HWND *toolbar = NULL, HWND *target = NULL);
+    HWND GetToolbar(HWND ieframe, HWND *toolbar = NULL, HWND *target = NULL);
+    bool AddToolbarIcon(HWND toolbar, HICON icon, int *index);
 
     // messages
     int  tb_buttoncount(HWND hwnd);
