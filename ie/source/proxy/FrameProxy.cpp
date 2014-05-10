@@ -113,6 +113,7 @@ FrameProxy::FrameProxy(const wstring& uuid, HINSTANCE instance,
         m_frameServer->load(toolbar, target, 
                             uuid, title, icon,
                             ::GetCurrentProcessId(), (INT_PTRX)this);
+        this->isOnline = true;
         return;
     }
 
