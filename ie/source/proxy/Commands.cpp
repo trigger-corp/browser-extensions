@@ -233,7 +233,7 @@ HRESULT button_onClickCommand::exec()
         return S_OK;
     }
 
-    hr = nativeControls->button_click(CComBSTR(this->uuid), this->point);
+    hr = nativeControls->button_click(CComBSTR(this->uuid), this->point.x, this->point.y);
     if (FAILED(hr)) {
         logger->error(L"button_onClickCommand::exec"
                       L"failed to invoke NativeControls::button_click"
