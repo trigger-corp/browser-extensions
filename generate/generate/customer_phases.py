@@ -60,25 +60,21 @@ def include_platform_in_html(debug=False):
 		locations = locations_debug
 
 	return [
-		{'when': {'platform_is': 'firefox'}, 'do': {'find_and_replace_in_dir': {
+		{'when': {'platform_is': 'firefox'}, 'do': {'insert_head_tag': {
 			"root_dir": locations["firefox"],
-			"find": "<head>",
-			"replace": "<head><script src='%{back_to_parent}%forge/app_config.js'></script><script src='%{back_to_parent}%forge/all.js'></script>"
+			"tag": "<script src='%{back_to_parent}%forge/app_config.js'></script><script src='%{back_to_parent}%forge/all.js'></script>"
 		}}},
-		{'when': {'platform_is': 'chrome'}, 'do': {'find_and_replace_in_dir': {
+		{'when': {'platform_is': 'chrome'}, 'do': {'insert_head_tag': {
 			"root_dir": locations["chrome"],
-			"find": "<head>",
-			"replace": "<head><script src='/forge/app_config.js'></script><script src='/forge/all.js'></script>"
+			"tag": "<script src='/forge/app_config.js'></script><script src='/forge/all.js'></script>"
 		}}},
-		{'when': {'platform_is': 'safari'}, 'do': {'find_and_replace_in_dir': {
+		{'when': {'platform_is': 'safari'}, 'do': {'insert_head_tag': {
 			"root_dir": locations["safari"],
-			"find": "<head>",
-			"replace": "<head><script src='%{back_to_parent}%forge/app_config.js'></script><script src='%{back_to_parent}%forge/all.js'></script>"
+			"tag": "<script src='%{back_to_parent}%forge/app_config.js'></script><script src='%{back_to_parent}%forge/all.js'></script>"
 		}}},
-		{'when': {'platform_is': 'ie'}, 'do': {'find_and_replace_in_dir': {
+		{'when': {'platform_is': 'ie'}, 'do': {'insert_head_tag': {
 			"root_dir": locations["ie"],
-			"find": "<head>",
-			"replace": "<head><script src='%{back_to_parent}%forge/app_config.js'></script><script src='%{back_to_parent}%forge/all.js'></script>"
+			"tag": "<script src='%{back_to_parent}%forge/app_config.js'></script><script src='%{back_to_parent}%forge/all.js'></script>"
 		}}},
 	]
 
