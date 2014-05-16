@@ -474,7 +474,6 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
     <ClCompile Include="..\source\ScriptExtensions.cpp" />
     <ClCompile Include="..\source\bho\dllexports.cpp" />
     <ClCompile Include="..\source\bho\dllmain.cpp" />
-    <ClCompile Include="..\source\bho\FeedbackDialog.cpp" />
     <ClCompile Include="..\source\bho\Registry.cpp" />
     <ClCompile Include="..\source\bho\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -509,7 +508,6 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
     <ClInclude Include="..\source\ScriptExtensions.h" />
     <ClInclude Include="..\source\util.h" />
     <ClInclude Include="..\source\bho\dllmain.h" />
-    <ClInclude Include="..\source\bho\FeedbackDialog.h" />
     <ClInclude Include="..\source\bho\Registry.h" />
     <ClInclude Include="..\source\bho\Resource.h" />
     <ClInclude Include="..\source\bho\stdafx.h" />
