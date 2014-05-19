@@ -55,9 +55,6 @@
     <ClCompile Include="..\source\bho\dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\bho\FeedbackDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\bho\Registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -136,9 +133,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\bho\dllmain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\bho\FeedbackDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\bho\Registry.h">
