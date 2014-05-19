@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Itanium">
@@ -162,10 +162,11 @@
       </DllDataFileName>
       <OutputDirectory>$(SolutionDir)\..\build\generated</OutputDirectory>
       <ValidateAllParameters>true</ValidateAllParameters>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <ResourceCompile>
       <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\source;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
@@ -201,10 +202,11 @@
       <DllDataFileName>
       </DllDataFileName>
       <OutputDirectory>$(SolutionDir)\..\build\generated</OutputDirectory>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <ResourceCompile>
       <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\source;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
@@ -281,10 +283,11 @@
       </DllDataFileName>
       <OutputDirectory>$(SolutionDir)\..\build\generated</OutputDirectory>
       <ValidateAllParameters>true</ValidateAllParameters>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <ResourceCompile>
       <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\source;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
@@ -322,10 +325,11 @@
       <DllDataFileName>
       </DllDataFileName>
       <OutputDirectory>$(SolutionDir)\..\build\generated</OutputDirectory>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <ResourceCompile>
       <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\source;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
@@ -515,6 +519,7 @@
     <ClInclude Include="..\source\proxy\FrameServer.h" />
     <ClInclude Include="..\source\ScriptExtensions.h" />
     <ClInclude Include="..\source\util.h" />
+    <ClInclude Include="..\source\vendor.h" />
     <ClInclude Include="..\source\WindowsMessage.h" />
   </ItemGroup>
   <ItemGroup>

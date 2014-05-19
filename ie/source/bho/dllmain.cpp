@@ -2,6 +2,7 @@
 #include "resource.h"
 #include <generated/BHO_h.h>
 #include "dllmain.h"
+#include "vendor.h"
 #include <boost/md5.hpp>
 
 CForgeBHOModule _AtlModule;
@@ -77,7 +78,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
                              L"manifest.json file is present at " +
                              _AtlModule.modulePath.wstring() +
                              L" and properly configured.").c_str(),
-                     L"trigger.io",
+                     VENDOR_COMPANY_NAME,
                      MB_TASKMODAL | MB_ICONEXCLAMATION);
         return EXIT_FAILURE;
     }

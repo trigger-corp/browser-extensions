@@ -1,13 +1,15 @@
 import "oaidl.idl";
 import "ocidl.idl";
 
+#include "vendor.h"
+
 
 /**
  * Interface: IBrowserHelperObject 
  */
 [
     object,
-    uuid(5E5BFAA1-40A0-4FD4-8FA9-66DD8D553337),
+    uuid(VENDOR_UUID_IBrowserHelperObject),
     dual,
     nonextensible,
     pointer_default(unique)
@@ -19,7 +21,7 @@ interface IBrowserHelperObject : IDispatch {
 /** 
  * Library: ForgeBHOLib */
 [
-    uuid(A6F64DB8-F0DF-4C25-95FA-1FD20AC302E4),
+    uuid(VENDOR_UUID_ForgeBHOLib),
     version(1.0),
 ]
 library ForgeBHOLib {
@@ -27,7 +29,7 @@ library ForgeBHOLib {
     importlib("Forge.tlb");
 
     [
-        uuid(E017A723-53B3-4952-895D-ED7C3377C885)		
+        uuid(VENDOR_UUID_BrowserHelperObject)
     ]
     coclass BrowserHelperObject {
         [default] interface IBrowserHelperObject;

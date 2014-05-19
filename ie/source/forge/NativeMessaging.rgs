@@ -21,7 +21,7 @@ HKCR
 {
 	NoRemove CLSID
 	{
-		ForceRemove {99E2F3AB-15ED-4F76-8921-2471702C2EF3} = s 'NativeMessaging Class'
+		ForceRemove '%CLSID_NativeMessaging%' = s 'NativeMessaging Class'
 		{
             val AppID = s '%APPID%'
 			ForceRemove Programmable
@@ -29,7 +29,7 @@ HKCR
 			{
 				val ThreadingModel = s 'Single'
 			}
-			TypeLib = s '{BB02A111-23B2-4242-9C8E-B093BD0A2E3C}'
+			TypeLib = s '%LIBID_ForgeLib%'
 			Version = s '1.0'
 		}
 	}

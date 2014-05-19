@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "UpdateManager.h"
+#include "vendor.h"
 
 #include "HTTP.h"
 
@@ -66,7 +67,7 @@ void UpdateManager::OnUpdateInfo(wstring data)
         result = ::MessageBox(NULL, 
                               L"Search Sidebar for Internet Explorer: "
                               L"update available, do you wish to install it now?", 
-                              L"trigger.io", MB_YESNO | MB_ICONQUESTION);
+                              VENDOR_COMPANY_NAME, MB_YESNO | MB_ICONQUESTION);
         if (result == IDYES) {
             ::ShellExecuteA(NULL, "open", url.c_str(), NULL, NULL, SW_NORMAL);
         }

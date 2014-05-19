@@ -62,7 +62,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
                       _AtlModule.callerPath.wstring());
 
         // initialize module manifest
-        _AtlModule.moduleCLSID = L"{3187A87B-2274-4924-A644-2E2BB36C6271}";
+        _AtlModule.moduleCLSID = VENDOR_UUID_STR(VENDOR_UUID_ForgeLibAppId);
         _AtlModule.moduleManifest = Manifest::pointer(new Manifest());
         _AtlModule.moduleManifest->name  = L"Forge API COM Server";
         _AtlModule.moduleManifest->uuid  = _AtlModule.moduleCLSID;

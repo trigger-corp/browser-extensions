@@ -180,6 +180,9 @@
     <ClInclude Include="..\source\proxy\Commands.h">
       <Filter>proxy</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\vendor.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\source\bho\BHO.rgs">
