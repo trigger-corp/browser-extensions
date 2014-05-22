@@ -188,9 +188,6 @@
     <None Include="..\source\bho\BrowserHelperObject.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\source\bho\dialog-question.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\source\bho\BHO.def">
       <Filter>Source Files</Filter>
     </None>
