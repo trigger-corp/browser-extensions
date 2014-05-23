@@ -334,6 +334,23 @@ def write_config(build, filename, content):
 		fileobj.write(content)
 
 @task
+def insert_head_tag(build, root_dir, tag, file_suffixes=("html",), template=False, **kw):
+	'''For all files ending with one of the suffixes, under the root_dir, insert ``tag`` as
+	early as possible after the <head> tag but after any <meta> tags.
+	'''
+	if template:
+		tag = utils.render_string(build.config, tag)
+
+	build.log.debug("inserting {tag} into <head> of {files}".format(
+		tag=tag, files="{0}/**/*.{1}".format(root_dir, file_suffixes)
+	))
+
+	find = r'<head>((\s*<meta[^>]+>)*)'
+	replace = r'<head>\1\n' + tag
+
+	find_and_replace_in_dir(build, root_dir, find, replace, file_suffixes)
+
+@task
 def find_and_replace_in_dir(build, root_dir, find, replace, file_suffixes=("html",), template=False, **kw):
 	'For all files ending with one of the suffixes, under the root_dir, replace ``find`` with ``replace``'
 	if template:
@@ -352,7 +369,7 @@ def find_and_replace_in_dir(build, root_dir, find, replace, file_suffixes=("html
 				if file_.rpartition('.')[2] in file_suffixes:
 					find_with_fixed_path = find.replace("%{back_to_parent}%", "../" * (depth+1))
 					replace_with_fixed_path = replace.replace("%{back_to_parent}%", "../" * (depth+1))
-					_replace_in_file(build, path.join(root, file_), find_with_fixed_path, replace_with_fixed_path)
+					regex_replace_in_file(build, path.join(root, file_), find_with_fixed_path, replace_with_fixed_path)
 
 def _replace_in_file(build, filename, find, replace):
 	build.log.debug(u"replacing {find} with {replace} in {filename}".format(**locals()))
