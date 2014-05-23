@@ -3,7 +3,6 @@
 #include <generated/BHO_h.h>
 #include "dllmain.h"
 
-#include <bho/FeedbackDialog.h>
 #include <bho/Registry.h>
 
 
@@ -173,18 +172,6 @@ STDAPI DllUnregisterServer(void)
         logger->error(L"BHO::dllexports::DllUnregisterServer "
                       L" -> Warning: _AtlModule.DllUnregisterServer failed");
     }
-
-// We install both architectures on x64, so only bring dialog up once!
-#ifndef _WIN64
-    // Uninstall hooks not officially supported in Forge yet, only
-    // trigger for these vendors:
-    if (_AtlModule.moduleManifest->name.find(L"Apture") != wstring::npos) {
-        try {
-            FeedbackDialog dlg(_AtlModule.moduleManifest->author);
-            dlg.Show(NULL);
-        } catch(...) {}
-    }
-#endif /* _WIN64 */
 
     return S_OK;
 }
