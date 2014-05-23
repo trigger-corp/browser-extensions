@@ -46,6 +46,7 @@ public:
 
     // static helpers
     static bool InjectDLL(HINSTANCE instance, DWORD processId);
+    static bool Is64BitProcess(DWORD processId);
     
 private:
     static DWORD WINAPI MessageHandlerListener(LPVOID param);

@@ -2,6 +2,81 @@
 #include "FrameProxy.h"
 #include "Commands.h"
 
+/**
+ * Static helper: Is64BitProcess
+ */
+bool FrameProxy::Is64BitProcess(DWORD processId)
+{
+    logger->debug(L"FrameProxy::Is64BitProcess");
+
+    // get os version: http://msdn.microsoft.com/en-us/library/ms724833(v=vs.85).aspx
+    OSVERSIONINFO version;
+    ::ZeroMemory(&version, sizeof(OSVERSIONINFO));
+    version.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    ::GetVersionEx(&version);
+
+    // get cpu arch: http://msdn.microsoft.com/en-us/library/ms724958(v=vs.85).aspx
+    SYSTEM_INFO sysinfo;
+    ::GetNativeSystemInfo(&sysinfo);
+
+    logger->debug(L"FrameProxy::Is64BitProcess Windows Version"
+                  L" -> dwMajorVersion " + boost::lexical_cast<wstring>(version.dwMajorVersion) +
+                  L" -> dwMinorVersion " + boost::lexical_cast<wstring>(version.dwMinorVersion) +
+                  L" -> wProcessorArchitecture " + boost::lexical_cast<wstring>(sysinfo.wProcessorArchitecture) +
+                  L" -> PROCESSOR_ARCHITECTURE_INTEL " + boost::lexical_cast<wstring>(PROCESSOR_ARCHITECTURE_INTEL) +
+                  L" -> PROCESSOR_ARCHITECTURE_AMD64 " + boost::lexical_cast<wstring>(PROCESSOR_ARCHITECTURE_AMD64));
+    logger->debug(L"FrameProxy::Is64BitProcess type sizes"
+                  L" -> int " + boost::lexical_cast<wstring>(sizeof(int)) +      // 4
+                  L" -> INT32 " + boost::lexical_cast<wstring>(sizeof(INT32)) +  // 4
+                  L" -> INT64 " + boost::lexical_cast<wstring>(sizeof(INT64)));  // 8
+
+    // is WOW64 process: http://msdn.microsoft.com/en-us/library/ms684139.aspx
+    BOOL isWow64 = FALSE;
+    typedef BOOL(WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
+    LPFN_ISWOW64PROCESS fnIsWow64Process = (LPFN_ISWOW64PROCESS) ::GetProcAddress(
+        ::GetModuleHandle(L"kernel32"), "IsWow64Process");
+
+    if (fnIsWow64Process) {
+        DWORD access = version.dwMajorVersion >= 6 ? PROCESS_QUERY_LIMITED_INFORMATION
+                                                   : PROCESS_QUERY_INFORMATION;
+        HANDLE process = ::OpenProcess(access, false, processId);
+        if (process) {
+            if (!fnIsWow64Process(process, &isWow64)) {
+                DWORD error = ::GetLastError();
+                logger->error(L"FrameProxy::Is64BitProcess IsWow64Process failed"
+                              L" -> " + boost::lexical_cast<wstring>(error));
+                isWow64 = FALSE;
+            }
+            ::CloseHandle(process);
+        }
+        else {
+            DWORD error = ::GetLastError();
+            logger->error(L"FrameProxy::Is64BitProcess failed to open process"
+                          L" -> " + boost::lexical_cast<wstring>(error));
+        }
+    }
+    else {
+        // This happens for windows versions earlier than XP SP2.
+        logger->info(L"FrameProxy::Is64BitProcess IsWow64Process missing");
+    }
+
+    logger->debug(L"FrameProxy::Is64BitProcess isWow64"
+                  L" -> " + boost::lexical_cast<wstring>(isWow64));
+
+    // If we are on a 32 bit CPU the process must be 32 bit.
+    if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL) {
+        return false;
+    }
+
+    // If the CPU is 64 bit the process can either be native 64 bit or 32 bit
+    // running under WOW64 emulation.
+    if (isWow64) {
+        return false; // 32 bit WOW64 process
+    }
+    else {
+        return true; // Native 64 bit process
+    }
+}
 
 /**
  * Static helper: InjectDLL
@@ -27,56 +102,43 @@ bool FrameProxy::InjectDLL(HINSTANCE instance, DWORD processId)
     ::GetModuleFileName(instance, buf, MAX_PATH);
     bfs::wpath path = bfs::wpath(buf).parent_path();
 
-    // get os version: http://msdn.microsoft.com/en-us/library/ms724833(v=vs.85).aspx
-    OSVERSIONINFO version;
-    ::ZeroMemory(&version, sizeof(OSVERSIONINFO));
-    version.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-    ::GetVersionEx(&version);
-
-    // get cpu arch: http://msdn.microsoft.com/en-us/library/ms724958(v=vs.85).aspx
-    SYSTEM_INFO sysinfo;
-    ::GetNativeSystemInfo(&sysinfo);
-
-    logger->debug(L"Windows Version " 
-                  L" -> dwMajorVersion " + boost::lexical_cast<wstring>(version.dwMajorVersion) +
-                  L" -> dwMinorVersion " + boost::lexical_cast<wstring>(version.dwMinorVersion) +
-                  L" -> wProcessorArchitecture " + boost::lexical_cast<wstring>(sysinfo.wProcessorArchitecture) +
-                  L" -> PROCESSOR_ARCHITECTURE_INTEL " + boost::lexical_cast<wstring>(PROCESSOR_ARCHITECTURE_INTEL) +
-                  L" -> PROCESSOR_ARCHITECTURE_AMD64 " + boost::lexical_cast<wstring>(PROCESSOR_ARCHITECTURE_AMD64));
-    logger->debug(L"int   IS: " + boost::lexical_cast<wstring>(sizeof(int)));    // 4
-    logger->debug(L"INT32 IS: " + boost::lexical_cast<wstring>(sizeof(INT32)));  // 4
-    logger->debug(L"INT64 IS: " + boost::lexical_cast<wstring>(sizeof(INT64)));  // 8
-
-    // spawn correct forgeXX.exe for os version and arch
-    if (version.dwMajorVersion >= 6 && version.dwMinorVersion >= 2 && 
-        sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL) {    // windows 8 x86 
-        path = path / L"forge32.exe";
-    } else if (version.dwMajorVersion >= 6 && version.dwMinorVersion >= 2) { // Windows 8 x64 - frame process is ALWAYS 64 bit
+    if (Is64BitProcess(processId)) {
         path = path / L"forge64.exe";
-    } else {                                                                 // everyone else
-#ifdef _WIN64
-        path = path / L"forge64.exe";
-#else
-        path = path / L"forge32.exe";
-#endif
     }
-     
+    else {
+        path = path / L"forge32.exe";
+    }
+
     logger->debug(L"FrameProxy::InjectDLL spawning process"
                   L" -> " + path.wstring());
                   
     if (!::CreateProcess(path.wstring().c_str(), params, 
                          NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, 
                          &startupInfo, &processInfo)) {
-        logger->debug(L"FrameProxy::InjectDLL failed to create process"
+        logger->error(L"FrameProxy::InjectDLL failed to create process"
                       L" -> " + path.wstring());
         return false;
     }
     
     ::WaitForSingleObject(processInfo.hProcess, INFINITE);
     
+    DWORD exitCode = 0;
+    if (!::GetExitCodeProcess(processInfo.hProcess, &exitCode)) {
+        DWORD error = ::GetLastError();
+        logger->warn(L"FrameProxy::InjectDLL failed to get process exit code"
+                     L" -> " + boost::lexical_cast<wstring>(error));
+        exitCode = 0; // TODO: Should this be an error?
+    }
+
     ::CloseHandle(processInfo.hThread);
     ::CloseHandle(processInfo.hProcess);
     
+    if (exitCode != 0) {
+        logger->error(L"FrameProxy::InjectDLL spawned process failed"
+                      L" -> " + boost::lexical_cast<wstring>(exitCode));
+        return false;
+    }
+
     return true;
 }
 

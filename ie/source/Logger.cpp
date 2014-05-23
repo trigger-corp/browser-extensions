@@ -36,8 +36,21 @@ void Logger::initialize(const boost::filesystem::wpath& path)
         this->debug(L"Logger::Logger could not read manifest");
         this->enabled = false;
     } else if (manifest->logging.filename != L"") {
-        this->debug(L"Logger::Logger using endpoint: " + manifest->logging.filename);
-        m_filename = manifest->logging.filename;
+        // Replace environment variables in path so %LOCALAPPDATA%Low can be
+        // used which is the only place where the low priviledged BHO process
+        // can create files.
+        wchar_t expandedPath[MAX_PATH];
+        DWORD len = ::ExpandEnvironmentStrings(manifest->logging.filename.c_str(),
+                                               expandedPath, MAX_PATH);
+        if (len > 0 && len <= MAX_PATH) {
+            m_filename = expandedPath;
+        }
+        else {
+            this->error(L"Logger::Logger failed to expand environment variables in path");
+            m_filename = manifest->logging.filename;
+        }
+
+        this->debug(L"Logger::Logger using endpoint: " + m_filename);
         this->enabled = true;
     } else {
         this->enabled = false;
@@ -93,7 +106,7 @@ std::wstring Logger::parse(HRESULT hr)
     ::LocalFree(reinterpret_cast<HLOCAL>(buf));
     
     std::wstringstream hrhex;
-    hrhex << L"0x" << std::hex << hr << '\0';
+    hrhex << L"0x" << std::hex << hr;
     
     return hrhex.str() + L" -> " + hrstr;
 }

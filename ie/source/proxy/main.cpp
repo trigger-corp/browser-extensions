@@ -154,15 +154,24 @@ int _tmain(int argc, wchar_t* argv[])
     logger->initialize(modulePath);
     logger->debug(L"forge.exe _tmain -> " + modulePath.wstring());
 
+    DWORD exitCode = 1;
     if (argc > 0) {
 #ifdef _WIN64
-        InjectDLL((DWORD)_wtoi(argv[0]), L"frame64.dll");
+        bool ret = InjectDLL((DWORD)_wtoi(argv[0]), L"frame64.dll");
 #else
-        InjectDLL((DWORD)_wtoi(argv[0]), L"frame32.dll");
-#endif 
+        bool ret = InjectDLL((DWORD)_wtoi(argv[0]), L"frame32.dll");
+#endif
+        exitCode = ret ? 0 : 2;
     }
 
-    logger->debug(L"forge.exe _tmain exiting");
+    logger->debug(L"forge.exe _tmain exiting"
+                  L" -> " + boost::lexical_cast<wstring>(exitCode));
 
-    return 0;
+    /**
+     * Possible exit codes:
+     * 0 - success
+     * 1 - invalid/missing command line arguments
+     * 2 - DLL injection failed
+     */
+    return exitCode;
 }
