@@ -479,5 +479,11 @@ void FrameServer::OnButtonClick(HWND hwnd, WPARAM wparam, LPARAM lparam)
             i->second.first->Write(&command, sizeof(button_onClickCommand), false);
         }
     }
+    else {
+        // We are in the same process as the proxy, execute command directly.
+        button_onClickCommand command(button.uuid.c_str(), point,
+                                      m_activeProcessId, m_activeProxy);
+        command.exec();
+    }
 }
 

@@ -305,7 +305,11 @@ HRESULT AccessibleBrowser::active(IWebBrowser2 **webBrowser2)
     // gets into a race condition with the rest of the startup code
     //hr = ::EnumChildWindows(ieframe, AccessibleBrowser::EnumChildWndProc, (LPARAM)&hwnd);
     hwnd = ::FindWindowEx(hwnd, NULL, L"Frame Tab", NULL);
-    if (!hwnd) { logger->error(L"AccessibleBrowser::active failed: Frame Tab"); return E_FAIL; }
+    if (!hwnd) {
+        // In IE7 there is no intermediate "Frame Tab" window. If we didn't find
+        // one try getting TabWindowClass directly from under ieframe.
+        hwnd = ieframe;
+    }
     hwnd = ::FindWindowEx(hwnd, NULL, L"TabWindowClass", NULL);
     if (!hwnd) { logger->error(L"AccessibleBrowser::active failed: TabWindowClass"); return E_FAIL; }
     hwnd = ::FindWindowEx(hwnd, NULL, L"Shell DocObject View", NULL);

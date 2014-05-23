@@ -110,7 +110,11 @@ STDMETHODIMP CNativeControls::load(BSTR _uuid, BSTR _extensionPath, unsigned int
         // get a popup parent that doesn't competely tie IE's knickers into a knot
         HWND parent = m_frame;
         parent = ::FindWindowEx(parent, NULL, L"Frame Tab", NULL);
-        if (!parent) { logger->error(L"CNativeControls::load failed: Frame Tab"); return E_FAIL; }
+        if (!parent) {
+            // In IE7 there is no intermediate "Frame Tab" window. If we didn't find
+            // one try getting TabWindowClass directly from under m_frame.
+            parent = m_frame;
+        }
         parent = ::FindWindowEx(parent, NULL, L"TabWindowClass", NULL);
         if (!parent) { logger->error(L"CNativeControls::load failed: TabWindowClass"); return E_FAIL; }
         /*parent = ::FindWindowEx(parent, NULL, L"Shell DocObject View", NULL);
