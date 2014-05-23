@@ -21,7 +21,7 @@ HKCR
 {
 	NoRemove CLSID
 	{
-		ForceRemove {7F2FA86A-181A-4F8F-B853-51F897A91227} = s 'NativeBackground Class'
+		ForceRemove '%CLSID_NativeBackground%' = s 'NativeBackground Class'
 		{
             val AppID = s '%APPID%'
 			ForceRemove Programmable
@@ -29,7 +29,7 @@ HKCR
 			{
 				val ThreadingModel = s 'Single'
 			}
-			TypeLib = s '{BB02A111-23B2-4242-9C8E-B093BD0A2E3C}'
+			TypeLib = s '%LIBID_ForgeLib%'
 			Version = s '1.0'
 		}
 	}

@@ -33,6 +33,7 @@
     <ClInclude Include="..\external\json_spirit\json_spirit_writer.h">
       <Filter>json_spirit</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\vendor.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="json_spirit">

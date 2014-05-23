@@ -2,6 +2,7 @@
 #include "NativeControls.h"
 #include <generated/Forge_i.h> /* for: */
 #include "dllmain.h"           /*   _AtlModule */
+#include "vendor.h"
 #include <WindowsMessage.h>
 #include <proxy/Channel.h>
 #include <proxy/Commands.h>
@@ -69,7 +70,7 @@ STDMETHODIMP CNativeControls::load(BSTR _uuid, BSTR _extensionPath, unsigned int
                              L" manifest.json file is present at " +
                              extensionPath.wstring() +
                              L" and properly configured.").c_str(),
-                     L"trigger.io",
+                     VENDOR_COMPANY_NAME,
                      MB_TASKMODAL | MB_ICONEXCLAMATION);
         // TODO halt init and exit gracefully
         return E_FAIL;

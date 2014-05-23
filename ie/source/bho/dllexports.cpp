@@ -2,6 +2,7 @@
 #include "resource.h"
 #include <generated/BHO_h.h>
 #include "dllmain.h"
+#include "vendor.h"
 
 #include <bho/Registry.h>
 
@@ -27,7 +28,7 @@ STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
     ::CoTaskMemFree(tmp);
 
     // BrowserHelperObject
-    wstring bho = L"{E017A723-53B3-4952-895D-ED7C3377C885}";
+    wstring bho = VENDOR_UUID_STR(VENDOR_UUID_BrowserHelperObject);
 
     // get classobject
     if (requested_clsid.find(_AtlModule.moduleCLSID) == 0) {
@@ -61,13 +62,11 @@ STDAPI DllRegisterServer(void)
 
     // CLSID's
     wstring clsid = _AtlModule.moduleCLSID;
-    wstring typelib  = L"{A6F64DB8-F0DF-4C25-95FA-1FD20AC302E4}"; // only changes between SDK versions 
+    wstring typelib  = VENDOR_UUID_STR(VENDOR_UUID_ForgeBHOLib); // only changes between SDK versions
 
-	wstring elevation32 = L"{D007D90B-423F-40A5-BE43-05BC2ABCA970}"; // arb GUID
-	wstring elevation64 = L"{D007D90B-423F-40A5-BE43-05BC2ABCA971}"; // arb GUID + 1
+	wstring elevation32 = VENDOR_UUID_STR(VENDOR_UUID_ELEVATION32);
+	wstring elevation64 = VENDOR_UUID_STR(VENDOR_UUID_ELEVATION64);
 
-    wstring CLSID_Shell_ToolbarExtExec = L"{1FBA04EE-3024-11D2-8F1F-0000F87ABD16}";
-    wstring CLSID_NativeBackground = L"{7F2FA86A-181A-4F8F-B853-51F897A91227}";
     wstring uuid = _AtlModule.moduleManifest->uuid;
 
     wstring hkcr, hklm_bho, hklm_button, hklm_elevation;

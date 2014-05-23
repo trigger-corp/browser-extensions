@@ -3,6 +3,7 @@
 #include "HTMLDocument.h"
 #include "AccessibleBrowser.h"
 #include "dllmain.h"
+#include "vendor.h"
 #include <util.h>
 #include <WindowsMessage.h>
 #include <proxy/Commands.h>
@@ -59,7 +60,7 @@ CBrowserHelperObject::CBrowserHelperObject()
                              L" manifest.json file is present at " +
                              _AtlModule.modulePath.wstring() +
                              L" and properly configured.").c_str(),
-                     L"trigger.io",
+                     VENDOR_COMPANY_NAME,
                      MB_TASKMODAL | MB_ICONEXCLAMATION);
         // TODO halt BHO init and exit gracefully
         return;

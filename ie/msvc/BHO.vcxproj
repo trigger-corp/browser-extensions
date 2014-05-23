@@ -167,7 +167,7 @@
     <Midl>
       <OutputDirectory>$(SolutionDir)\..\build\generated</OutputDirectory>
       <ValidateAllParameters>true</ValidateAllParameters>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\Forge_build\;$(ProjectDir)\..\source\forge\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\Forge_build\;$(ProjectDir)\..\source\;$(ProjectDir)\..\source\forge\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <CustomBuildStep>
       <Command>rem regsvr32 /s /c "$(TargetPath)"</Command>
@@ -202,6 +202,9 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
       <AdditionalManifestFiles>..\source\bho\bho.dll.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
     <ProjectReference />
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(IntDir);$(SolutionDir)\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'">
     <ClCompile>
@@ -277,7 +280,7 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
       <TargetEnvironment>X64</TargetEnvironment>
       <OutputDirectory>$(SolutionDir)\..\build\generated</OutputDirectory>
       <ValidateAllParameters>true</ValidateAllParameters>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\Forge_build\;$(ProjectDir)\..\source\forge\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\Forge_build\;$(ProjectDir)\..\source\;$(ProjectDir)\..\source\forge\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <PostBuildEvent>
       <Command>IF "%uuid%"=="" GOTO End
@@ -302,6 +305,9 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
     <Manifest>
       <AdditionalManifestFiles>..\source\bho\bho.dll.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(IntDir);$(SolutionDir)\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -330,7 +336,7 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
     <Midl>
       <OutputDirectory>$(SolutionDir)\..\build\generated</OutputDirectory>
       <ValidateAllParameters>true</ValidateAllParameters>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\Forge_build\;$(ProjectDir)\..\source\forge\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\Forge_build\;$(ProjectDir)\..\source\;$(ProjectDir)\..\source\forge\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <CustomBuildStep>
       <Command>rem regsvr32 /s /c "$(TargetPath)"</Command>
@@ -351,6 +357,9 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
     <Manifest>
       <AdditionalManifestFiles>..\source\bho\bho.dll.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(IntDir);$(SolutionDir)\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">
     <ClCompile>
@@ -421,7 +430,7 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
       <TargetEnvironment>X64</TargetEnvironment>
       <OutputDirectory>$(SolutionDir)\..\build\generated</OutputDirectory>
       <ValidateAllParameters>true</ValidateAllParameters>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\Forge_build\;$(ProjectDir)\..\source\forge\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\Forge_build\;$(ProjectDir)\..\source\;$(ProjectDir)\..\source\forge\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <PostBuildEvent>
       <Command>
@@ -433,6 +442,9 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
     <Manifest>
       <AdditionalManifestFiles>..\source\bho\bho.dll.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(IntDir);$(SolutionDir)\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\build\generated\BHO_i.c">
@@ -514,6 +526,7 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
     <ClInclude Include="..\source\bho\targetver.h" />
     <ClInclude Include="..\source\bho\UpdateManager.h" />
     <ClInclude Include="..\source\bho\BrowserHelperObject.h" />
+    <ClInclude Include="..\source\vendor.h" />
     <ClInclude Include="..\source\WindowsMessage.h" />
   </ItemGroup>
   <ItemGroup>
@@ -525,14 +538,7 @@ xcopy $(SolutionDir)\..\..\%uuid%\development\ie\forge $(OutDir)\forge /e /i /y
     <Midl Include="..\source\bho\BHO.idl" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\source\bho\BHO.rc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'">$(IntDir)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">$(IntDir)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)</AdditionalIncludeDirectories>
-    </ResourceCompile>
+    <ResourceCompile Include="..\source\bho\BHO.rc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Forge.vcxproj">

@@ -2,6 +2,7 @@
 #include "FrameServer.h"
 #include "FrameProxy.h"
 #include "Commands.h"
+#include "vendor.h"
 #include <WindowsMessage.h>
 
 
@@ -129,7 +130,7 @@ void FrameServer::load(HWND toolbar, HWND target,
                      wstring(L"Forge could not create button. Please check that "
                              L"your icon file is a 16x16 bitmap in .ico format: "
                              L"'" + icon + L"'").c_str(),
-                     L"trigger.io",
+                     VENDOR_COMPANY_NAME,
                      MB_TASKMODAL | MB_ICONEXCLAMATION);
         return;
     }

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ScriptExtensions.h"
+#include "vendor.h"
 
 
 /**
@@ -61,7 +62,7 @@ void ScriptExtensions::Reload()
                              wstring(L"You have an invalid script specified "
                                      L"in your config.json: " +
                                      path.wstring()).c_str(),
-                             L"trigger.io",
+                             VENDOR_COMPANY_NAME,
                              MB_TASKMODAL | MB_ICONEXCLAMATION);
                 continue;
             }
@@ -82,7 +83,7 @@ void ScriptExtensions::Reload()
                              wstring(L"You have an invalid stylesheet specified "
                                      L"in your config.json: " +
                                      path.wstring()).c_str(),
-                             L"trigger.io",
+                             VENDOR_COMPANY_NAME,
                              MB_TASKMODAL | MB_ICONEXCLAMATION);
 
                 m_styles[*name] = wstringpointer();

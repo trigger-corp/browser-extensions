@@ -3,15 +3,16 @@
 
 #include <generated/Forge_i.h> /* for: */
 #include "dllmain.h"           /*   _AtlModule */
+#include "vendor.h"
 
 #include <iepmapi.h> /* for IEGetWriteableHKCU */
 
 
 /**
- * TODO - vendorspec
+ * TODO - Derive registry key name from manifest instead of hardcoding it.
  */
 const wstring Preferences::CurrentUser  = 
-    L"trigger.io\\";
+    VENDOR_COMPANY_NAME L"\\";
 const wstring Preferences::LocalMachine =
     L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\";
 
