@@ -32,16 +32,14 @@ HRESULT button_addCommand::exec(HWND toolbar, HWND target, FrameServer::Button *
         return E_FAIL;
     }
 
-    // get toolbar image list
-    HIMAGELIST imagelist;
-    if (!WindowsMessage::tb_getimagelist(toolbar, &imagelist)) {
-        logger->error(L"button_addCommand::exec failed to get image lists"
-                     L" -> " + path.wstring());
+    int index = -1;
+    if (!WindowsMessage::AddToolbarIcon(toolbar, icon, &index)) {
+        logger->error(L"button_addCommand::exec failed to add icon"
+                      L" -> " + path.wstring());
         return E_FAIL;
     }
 
     // add button
-    int index = ImageList_AddIcon(imagelist, icon);
     TBBUTTON button;
     memset(&button, 0, sizeof(TBBUTTON));
     button.fsState = TBSTATE_ENABLED;
@@ -89,35 +87,26 @@ HRESULT button_setIconCommand::exec(HWND toolbar, HWND target, int idCommand, in
     icon = (HICON)::LoadImage(NULL, path.wstring().c_str(),
                               IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE);
     if (!icon) {
-        logger->debug(L"button_setIconCommand::exec failed to load icon"
+        logger->error(L"button_setIconCommand::exec failed to load icon"
                       L" -> " + path.wstring());
-    }
-
-    // get toolbar image list
-    HIMAGELIST imagelist;
-    if (!WindowsMessage::tb_getimagelist(toolbar, &imagelist)) {
-        logger->error(L"button_setIconCommand::exec failed to get image lists"
-                     L" -> " + path.wstring());
         return E_FAIL;
     }
 
-    // replace icon 
-    if (ImageList_ReplaceIcon(imagelist, iBitmap, icon) == -1) {
+    // Replace old icon in image lists
+    int index = iBitmap;
+    if (!WindowsMessage::AddToolbarIcon(toolbar, icon, &index)) {
         logger->error(L"button_setIconCommand::exec failed to replace icon"
-                     L" -> " + path.wstring());
-        return E_FAIL;    }
-
-    if (!WindowsMessage::tb_setimagelist(toolbar, imagelist)) {
-        logger->error(L"button_setIconCommand::exec failed to set imagelist"
-                     L" -> " + path.wstring());
+                      L" -> " + path.wstring());
         return E_FAIL;
     }
+
+    // Send bitmap change message to refresh button with updated icon
     if (!WindowsMessage::tb_changebitmap(toolbar, idCommand, iBitmap)) {
         logger->error(L"button_setIconCommand::exec failed to change bitmap"
-                     L" -> " + path.wstring());
+                      L" -> " + path.wstring());
         return E_FAIL;
     }
-      
+
     return S_OK;
 }
 
