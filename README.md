@@ -6,6 +6,7 @@ Build and run cross-platform browser extensions from one codebase.
 Please see the [introductory blog post][intro-blog] for details on the
 history of this project.
 
+Documentation [can be found here][docs].
 
 
 Dependencies
@@ -121,3 +122,4 @@ Testing OpenForge
 
 <!-- Link -->
    [intro-blog]: http://trigger.io/cross-platform-application-development-blog/2013/09/10/introducing-openforge-an-open-source-cross-platform-browser-add-on-framework/
+   [docs]: http://legacy-docs.trigger.io/en/v1.4/modules/browser/index.html
