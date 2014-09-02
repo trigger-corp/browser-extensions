@@ -117,7 +117,7 @@ of the extension. Add the following to <app dir>/local_config.json to use the ke
     "chrome": {
         "profile": {
             "crx_key": "crxkey.pem",
-            "crx_key_path": "<path to crxkey.pem>",
+            "crx_key_path": "<path to crxkey.pem>"
         }
     }
 """
