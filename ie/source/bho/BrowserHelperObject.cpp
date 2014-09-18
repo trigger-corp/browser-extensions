@@ -727,7 +727,12 @@ STDMETHODIMP CBrowserHelperObject::Invoke(DISPID dispid,
                 m_frameProxy->SetCurrent();
             }
         }
-    }
+	} else if (dispid == DISPID_COMMANDSTATECHANGE) {
+		// if we hover over a window that wasn't active and click on the extension icon
+		if (m_frameProxy) {
+            m_frameProxy->SetCurrent();
+        }
+	}
 
     // forward invocation
     HRESULT hr;
