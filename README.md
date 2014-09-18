@@ -1,10 +1,7 @@
-OpenForge
-=========
+browser-extensions
+==================
 
 Build and run cross-platform browser extensions from one codebase.
-
-Please see the [introductory blog post][intro-blog] for details on the
-history of this project.
 
 Documentation [can be found here][docs].
 
@@ -56,7 +53,7 @@ Installation
 
 ### Clone Repo:
 
-    git clone https://github.com/trigger-corp/browser-extensions.git
+    git clone https://github.com/pingidentity/browser-extensions
 
 ### Create Python Environment:
 
