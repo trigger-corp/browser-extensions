@@ -1,5 +1,11 @@
+.metadata
+.project
+.log
 .DS_Store
 .DS_Store?
+projects/**/*.log
+projects/**/development
+projects/**/release
 chrome/common
 firefox/content/common
 generate/generate\.egg-info/
@@ -28,3 +34,7 @@ trigger-gen
 **/gen
 **/build
 **/.hash
+**/*.suo
+**/*.sdf
+**/*.opensdf
+**/ipch

@@ -13,7 +13,8 @@ import zipfile
 from StringIO import StringIO
 
 project_dir = os.getcwd()
-platform_dir = path.abspath(path.join(sys.path[0], '../..'))
+#platform_dir = path.abspath(path.join(sys.path[0], '../..'))
+platform_dir = path.abspath(path.join(os.path.dirname( os.path.realpath( __file__ ) ), '../..'))
 config_dir = path.join(platform_dir, 'configuration')
 sys.path.append(path.abspath(path.join(platform_dir, 'generate/build_tools')))
 

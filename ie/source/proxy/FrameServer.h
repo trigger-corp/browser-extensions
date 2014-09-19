@@ -23,7 +23,7 @@ public:
     void unload(DWORDX processId, INT_PTRX proxyClient);
 
     // interface
-    void SetCurrentProxy(DWORDX processId, INT_PTRX proxyClient);
+    void SetCurrentProxy(DWORDX processId, INT_PTRX proxyClient, HWND toolbar);
     LRESULT SendMessage(UINT msg, WPARAM wparam, LPARAM lparam) { 
         return ::SendMessage(this->m_toolbar, msg, wparam, lparam); 
     }
@@ -66,11 +66,15 @@ private:
     Channel  *m_channel;
     DWORD     m_tabCount;
     DWORDX    m_activeProcessId; 
-    INT_PTRX  m_activeProxy;     
+    INT_PTRX  m_activeProxy;
+	HWND      m_activeToolbar;
 
     typedef std::pair<Channel*, LONG> ClientListener; 
     typedef stdext::hash_map<DWORDX, ClientListener> ClientListeners;
     ClientListeners m_clientListeners;
+
+	typedef stdext::hash_map<wstring, DWORD> ToolbarTabCount;
+	ToolbarTabCount m_toolbarTabCount;
 
     ATL::CComAutoCriticalSection m_clientLock; 
 

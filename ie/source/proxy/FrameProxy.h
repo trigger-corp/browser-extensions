@@ -57,4 +57,5 @@ private:
 
     wstring uuid;
     bool isOnline;
+	HWND m_toolbar;
 };

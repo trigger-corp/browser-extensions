@@ -153,7 +153,8 @@ FrameProxy::FrameProxy(const wstring& uuid, HINSTANCE instance,
     : uuid(uuid),
       isOnline(false),
       m_commandChannel(NULL),
-      m_messageChannel(NULL)
+      m_messageChannel(NULL),
+	  m_toolbar(toolbar)
 {
     logger->debug(L"FrameProxy::FrameProxy"
                   L" -> " + uuid +
@@ -223,11 +224,11 @@ void FrameProxy::SetCurrent()
 
     if (m_frameServer) {
         logger->debug(L"FrameProxy::SetCurrent direct call");
-        return m_frameServer->SetCurrentProxy(::GetCurrentProcessId(), (INT_PTRX)this);
+        return m_frameServer->SetCurrentProxy(::GetCurrentProcessId(), (INT_PTRX)this, m_toolbar);
     } 
       
     //logger->debug(L"FrameProxy::SetCurrent Write");
-    SelectTabCommand command(::GetCurrentProcessId(), (INT_PTRX)this);
+    SelectTabCommand command(::GetCurrentProcessId(), (INT_PTRX)this, m_toolbar);
     m_commandChannel->Write(&command, sizeof(command));
     //logger->debug(L"FrameProxy::SetCurrent Write fin");
 }

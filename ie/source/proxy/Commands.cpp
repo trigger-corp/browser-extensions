@@ -49,9 +49,31 @@ HRESULT button_addCommand::exec(HWND toolbar, HWND target, FrameServer::Button *
     button.iString = (INT_PTR)this->title;
     ::SendMessage(toolbar, TB_INSERTBUTTON, 0, (LPARAM)&button);
 
-    // refresh the size of the toolbar
-    ::SendMessage(toolbar, WM_SIZE, 0, 0);
-    ::SendMessage(target,  WM_SIZE, 0, 0);
+	int ie_major = 0, ie_minor = 0;
+    if (FAILED(GET_MSIE_VERSION(&ie_major, &ie_minor))) {
+		logger->error(L"WindowsMessage::GetToolbar failed to determine IE version");
+		return E_FAIL;
+	}
+	if (ie_major >= 8) {
+		RECT rect;
+		HWND ieFrame = GetParent(GetParent(GetParent(GetParent(toolbar))));
+		// refresh the size of the toolbar
+		::SendMessage(target, WM_SIZE, 0, 0);
+		// restore the window if it is maximized. Otherwise the resizing (steps below) won't work.
+		// ...and yes...this is the only way i found to make it work when the window
+		// was maximized before it was last closed
+		ShowWindow(ieFrame, SW_RESTORE);
+		// force ie frame resize so the new toolbar size kicks in
+		GetWindowRect( ieFrame, &rect );
+		SetWindowPos( ieFrame, NULL, rect.left, rect.top, rect.right - rect.left +1,
+					rect.bottom - rect.top, SWP_NOZORDER );
+		SetWindowPos( ieFrame, NULL, rect.left, rect.top, rect.right - rect.left,
+					rect.bottom - rect.top, SWP_NOZORDER );
+	} else {
+		// refresh the size of the toolbar
+		::SendMessage(toolbar, WM_SIZE, 0, 0);
+		::SendMessage(target,  WM_SIZE, 0, 0);
+	}
 
     (*out_button).uuid      = this->uuid;
     (*out_button).idCommand = 0xc001;     // TODO
@@ -239,7 +261,7 @@ HRESULT button_onClickCommand::exec()
         return S_OK;
     }
 
-    if (major >= 9) {
+    if (major >= 8) {
         BOOL visible = FALSE;
         HWND popup = NULL;
         hr = nativeControls->popup_hwnd(CComBSTR(this->uuid), &visible, (ULONG*)&popup);

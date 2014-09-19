@@ -80,8 +80,10 @@ void FrameServer::load(HWND toolbar, HWND target,
                        const wstring& uuid, const wstring& title, const wstring& icon, 
                        DWORDX processId, INT_PTRX proxy)
 {
+	wstring currentToolbar = boost::lexical_cast<wstring>(toolbar);
+
     logger->debug(L"FrameServer::load"
-                  L" -> " + boost::lexical_cast<wstring>(toolbar) +
+                  L" -> " + currentToolbar +
                   L" -> " + boost::lexical_cast<wstring>(target) +
                   L" -> " + uuid +
                   L" -> " + title +
@@ -98,11 +100,13 @@ void FrameServer::load(HWND toolbar, HWND target,
         if (m_clientListeners.size() == 1) {
             m_activeProcessId = processId;
             m_activeProxy = proxy;
+			m_activeToolbar = toolbar;
         }
     }
 
+	m_tabCount++;
     // only initialize the first time
-    if (++m_tabCount != 1) {
+    if (++m_toolbarTabCount[currentToolbar] != 1) {
         logger->debug(L"FrameServer::load already initialized");
         lock.Unlock();
         return;
@@ -136,7 +140,7 @@ void FrameServer::load(HWND toolbar, HWND target,
     }
 
     lock.Lock();
-    m_buttons[uuid] = button;
+    m_buttons[currentToolbar] = button;
     lock.Unlock();
     
 }
@@ -181,6 +185,9 @@ void FrameServer::unload(DWORDX processId, INT_PTRX proxy)
             delete m_channel;
             m_channel = NULL;
         }
+
+		//clear the toolbar tab count
+		m_toolbarTabCount.clear();
     }
 }
 
@@ -188,7 +195,7 @@ void FrameServer::unload(DWORDX processId, INT_PTRX proxy)
 /**
  * Interface: 
  */
-void FrameServer::SetCurrentProxy(DWORDX processId, INT_PTRX proxy)
+void FrameServer::SetCurrentProxy(DWORDX processId, INT_PTRX proxy, HWND toolbar)
 {
     /*logger->debug(L"FrameServer::SetCurrentProxy"
                   L" -> " + boost::lexical_cast<wstring>(processId) +
@@ -200,6 +207,7 @@ void FrameServer::SetCurrentProxy(DWORDX processId, INT_PTRX proxy)
     // store current proxy  
     m_activeProcessId = processId;
     m_activeProxy = proxy;
+	m_activeToolbar = toolbar;
     //logger->debug(L"FrameServer::SetCurrentProxy fin");
 }
 
@@ -262,6 +270,8 @@ DWORD FrameServer::ProxyListen(LPVOID param)
 
     FrameServer* pThis = (FrameServer*)param;
 
+	wstring currentToolbar = boost::lexical_cast<wstring>(pThis->m_activeToolbar);
+
     pThis->m_channel = new Channel(L"IeBarListner", ::GetCurrentProcessId());
     while (pThis->m_channel) {
         char buffer[Channel::SECTION_SIZE];
@@ -310,7 +320,7 @@ DWORD FrameServer::ProxyListen(LPVOID param)
 
         case SelectTabCommand::COMMAND_TYPE: {
             SelectTabCommand *command = (SelectTabCommand*)buffer;
-            pThis->SetCurrentProxy(command->processId, command->proxy);
+			pThis->SetCurrentProxy(command->processId, command->proxy, command->toolbar);
         }
             break;
 
@@ -322,13 +332,13 @@ DWORD FrameServer::ProxyListen(LPVOID param)
                 logger->error(L"FrameServer::ProxyListen button_setIconCommand failed"
                               L" -> " + logger->parse(hr));
             }
-            pThis->m_buttons[button.uuid] = button;
+            pThis->m_buttons[currentToolbar] = button;
         }
             break;
 
         case button_setIconCommand::COMMAND_TYPE: {
             button_setIconCommand *command = (button_setIconCommand*)buffer;
-            Button button = pThis->m_buttons[command->uuid];
+            Button button = pThis->m_buttons[currentToolbar];
             hr = command->exec(pThis->m_toolbar, pThis->m_target, 
                                button.idCommand, button.iBitmap);
             if (FAILED(hr)) {
@@ -340,7 +350,7 @@ DWORD FrameServer::ProxyListen(LPVOID param)
 
         case button_setTitleCommand::COMMAND_TYPE: {
             button_setTitleCommand *command = (button_setTitleCommand*)buffer;
-            Button button = pThis->m_buttons[command->uuid];
+            Button button = pThis->m_buttons[currentToolbar];
             hr = command->exec(pThis->m_toolbar, pThis->m_target, button.idCommand);
             if (FAILED(hr)) {
                 logger->error(L"FrameServer::ProxyListen button_setTitleCommand failed"
@@ -351,7 +361,7 @@ DWORD FrameServer::ProxyListen(LPVOID param)
 
         case button_setBadgeCommand::COMMAND_TYPE: {
             button_setBadgeCommand *command = (button_setBadgeCommand*)buffer;
-            Button button = pThis->m_buttons[command->uuid];
+            Button button = pThis->m_buttons[currentToolbar];
             hr = command->exec(pThis->m_toolbar, pThis->m_target, button.idCommand);
             if (FAILED(hr)) {
                 logger->error(L"FrameServer::ProxyListen button_setBadgeCommand failed"
@@ -362,7 +372,7 @@ DWORD FrameServer::ProxyListen(LPVOID param)
 
         case button_setBadgeBackgroundColorCommand::COMMAND_TYPE: {
             button_setBadgeBackgroundColorCommand *command = (button_setBadgeBackgroundColorCommand*)buffer;
-            Button button = pThis->m_buttons[command->uuid];
+            Button button = pThis->m_buttons[currentToolbar];
             hr = command->exec(pThis->m_toolbar, pThis->m_target, button.idCommand);
             if (FAILED(hr)) {
                 logger->error(L"FrameServer::ProxyListen button_setBadgeBackgroundColorCommand failed"
@@ -440,7 +450,7 @@ void FrameServer::OnButtonClick(HWND hwnd, WPARAM wparam, LPARAM lparam)
     Buttons::const_iterator i;
     for (i = m_buttons.begin(); i != m_buttons.end(); i++) {
         button = i->second;
-        if (button.idCommand == wparam) break;
+        if (button.toolbar == m_activeToolbar && button.idCommand == wparam) break;
         else button.idCommand = 0;
     }
     if (button.idCommand == 0) { 
