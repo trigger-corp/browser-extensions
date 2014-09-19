@@ -3,9 +3,6 @@
 .log
 .DS_Store
 .DS_Store?
-projects/**/*.log
-projects/**/development
-projects/**/release
 chrome/common
 firefox/content/common
 generate/generate\.egg-info/
