@@ -1,3 +1,6 @@
+.metadata
+.project
+.log
 .DS_Store
 .DS_Store?
 chrome/common
@@ -28,3 +31,7 @@ trigger-gen
 **/gen
 **/build
 **/.hash
+**/*.suo
+**/*.sdf
+**/*.opensdf
+**/ipch
