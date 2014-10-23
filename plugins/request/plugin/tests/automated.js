@@ -1,7 +1,7 @@
 module("forge.request.ajax");
 
 // URL to a page which returns REQUEST_METHOD, HTTP headers, COOKIE, GET and POST data as a JSON object.
-var testRoot = 'http://ops.trigger.io/75d92dce/tests/';
+var testRoot = 'http://localhost/ops_webmynd_com/tests/';
 var testData = testRoot + 'data.php';
 var testCookie = testRoot + 'cookie.php';
 var testJson = testRoot + 'test.json';

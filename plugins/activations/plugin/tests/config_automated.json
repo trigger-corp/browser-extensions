@@ -1,7 +1,7 @@
 [
 	{
 		"patterns": [
-			"http://ops.trigger.io/75d92dce/tests/empty.html"
+			"http://localhost/ops_webmynd_com/tests/empty.html"
 		],
 		"run_at": "start",
 		"scripts": [
@@ -20,7 +20,7 @@
 	{
 		"all_frames": true,
 		"patterns": [
-			"http://ops.trigger.io/75d92dce/tests/*"
+			"http://localhost/ops_webmynd_com/tests/*"
 		],
 		"run_at": "start",
 		"scripts": [
@@ -31,7 +31,7 @@
 	},
 	{
 		"patterns": [
-			"http://ops.trigger.io/75d92dce/tests/*"
+			"http://localhost/ops_webmynd_com/tests/*"
 		],
 		"run_at": "start",
 		"scripts": [

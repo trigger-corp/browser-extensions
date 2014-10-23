@@ -1,5 +1,4 @@
-/* vim:st=2:sts=2:sw=2:
- * This Source Code Form is subject to the terms of the Mozilla Public
+/* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
@@ -270,6 +269,12 @@ TestRunner.prototype = {
       this.waitUntilCallback = null;
       if (this.test.passed == 0 && this.test.failed == 0) {
         this._logTestFailed("empty test");
+        if ("testMessage" in this.console) {
+          this.console.testMessage(false, false, this.test.name, "Empty test");
+        }
+        else {
+          this.console.error("fail:", "Empty test")
+        }
         this.failed++;
         this.test.failed++;
       }
@@ -414,6 +419,12 @@ TestRunner.prototype = {
 
     function tiredOfWaiting() {
       self._logTestFailed("timed out");
+      if ("testMessage" in self.console) {
+        self.console.testMessage(false, false, self.test.name, "Timed out");
+      }
+      else {
+        self.console.error("fail:", "Timed out")
+      }
       if (self.waitUntilCallback) {
         self.waitUntilCallback(true);
         self.waitUntilCallback = null;

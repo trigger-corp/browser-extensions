@@ -1,12 +1,13 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
 "use strict";
 
 const { Loader } = require('sdk/test/loader');
-const Pages = require("sdk/page-worker");
-const Page = Pages.Page;
+const { Page } = require("sdk/page-worker");
+const { URL } = require("sdk/url");
+const fixtures = require("./fixtures");
+const testURI = fixtures.url("test.html");
 
 const ERR_DESTROYED =
   "Couldn't find the worker to receive this message. " +
@@ -90,17 +91,17 @@ exports.testPageProperties = function(assert) {
 
 exports.testConstructorAndDestructor = function(assert, done) {
   let loader = Loader(module);
-  let Pages = loader.require("sdk/page-worker");
+  let { Page } = loader.require("sdk/page-worker");
   let global = loader.sandbox("sdk/page-worker");
 
   let pagesReady = 0;
 
-  let page1 = Pages.Page({
+  let page1 = Page({
     contentScript:      "self.postMessage('')",
     contentScriptWhen:  "end",
     onMessage:          pageReady
   });
-  let page2 = Pages.Page({
+  let page2 = Page({
     contentScript:      "self.postMessage('')",
     contentScriptWhen:  "end",
     onMessage:          pageReady
@@ -125,9 +126,9 @@ exports.testConstructorAndDestructor = function(assert, done) {
 
 exports.testAutoDestructor = function(assert, done) {
   let loader = Loader(module);
-  let Pages = loader.require("sdk/page-worker");
+  let { Page } = loader.require("sdk/page-worker");
 
-  let page = Pages.Page({
+  let page = Page({
     contentScript: "self.postMessage('')",
     contentScriptWhen: "end",
     onMessage: function() {
@@ -147,7 +148,7 @@ exports.testValidateOptions = function(assert) {
 
   assert.throws(
     function () Page({ onMessage: "This is not a function."}),
-    /The event listener must be a function\./,
+    /The option "onMessage" must be one of the following types: function/,
     "Validation correctly denied a non-function onMessage."
   );
 
@@ -156,14 +157,23 @@ exports.testValidateOptions = function(assert) {
 
 exports.testContentAndAllowGettersAndSetters = function(assert, done) {
   let content = "data:text/html;charset=utf-8,<script>window.localStorage.allowScript=3;</script>";
+
+  // Load up the page with testURI initially for the resource:// principal,
+  // then load the actual data:* content, as data:* URIs no longer
+  // have localStorage
   let page = Page({
-    contentURL: content,
-    contentScript: "self.postMessage(window.localStorage.allowScript)",
+    contentURL: testURI,
+    contentScript: "if (window.location.href==='"+testURI+"')" +
+      "  self.postMessage('reload');" +
+      "else " +
+      "  self.postMessage(window.localStorage.allowScript)",
     contentScriptWhen: "end",
     onMessage: step0
   });
 
   function step0(message) {
+    if (message === 'reload')
+      return page.contentURL = content;
     assert.equal(message, "3",
                      "Correct value expected for allowScript - 3");
     assert.equal(page.contentURL, content,
@@ -233,15 +243,14 @@ exports.testMultipleOnMessageCallbacks = function(assert, done) {
   let page = Page({
     contentScript: "self.postMessage('')",
     contentScriptWhen: "end",
-    onMessage: function() count += 1
+    onMessage: () => count += 1
   });
-  page.on('message', function() count += 2);
-  page.on('message', function() count *= 3);
-  page.on('message', function()
+  page.on('message', () => count += 2);
+  page.on('message', () => count *= 3);
+  page.on('message', () =>
     assert.equal(count, 9, "All callbacks were called, in order."));
-  page.on('message', function() done());
-
-}
+  page.on('message', done);
+};
 
 exports.testLoadContentPage = function(assert, done) {
   let page = Page({
@@ -253,8 +262,8 @@ exports.testLoadContentPage = function(assert, done) {
         return done();
       assert[msg].apply(assert, message);
     },
-    contentURL: require("sdk/self").data.url("test-page-worker.html"),
-    contentScriptFile: require("sdk/self").data.url("test-page-worker.js"),
+    contentURL: fixtures.url("test-page-worker.html"),
+    contentScriptFile: fixtures.url("test-page-worker.js"),
     contentScriptWhen: "ready"
   });
 }
@@ -302,6 +311,108 @@ exports.testPingPong = function(assert, done) {
   });
 };
 
+exports.testRedirect = function (assert, done) {
+  let page = Page({
+    contentURL: 'data:text/html;charset=utf-8,first-page',
+    contentScriptWhen: "end",
+    contentScript: '' +
+      'if (/first-page/.test(document.location.href)) ' +
+      '  document.location.href = "data:text/html;charset=utf-8,redirect";' +
+      'else ' +
+      '  self.port.emit("redirect", document.location.href);'
+  });
+
+  page.port.on('redirect', function (url) {
+    assert.equal(url, 'data:text/html;charset=utf-8,redirect', 'Reinjects contentScript on reload');
+    done();
+  });
+};
+
+exports.testRedirectIncludeArrays = function (assert, done) {
+  let firstURL = 'data:text/html;charset=utf-8,first-page';
+  let page = Page({
+    contentURL: firstURL,
+    contentScript: '(function () {' +
+      'self.port.emit("load", document.location.href);' +
+      '  self.port.on("redirect", function (url) {' +
+      '   document.location.href = url;' +
+      '  })' +
+      '})();',
+    include: ['about:blank', 'data:*']
+  });
+
+  page.port.on('load', function (url) {
+    if (url === firstURL) {
+      page.port.emit('redirect', 'about:blank');
+    } else if (url === 'about:blank') {
+      page.port.emit('redirect', 'about:mozilla');
+      assert.ok('`include` property handles arrays');
+      assert.equal(url, 'about:blank', 'Redirects work with accepted domains');
+      done();
+    } else if (url === 'about:mozilla') {
+      assert.fail('Should not redirect to restricted domain');
+    }
+  });
+};
+
+exports.testRedirectFromWorker = function (assert, done) {
+  let firstURL = 'data:text/html;charset=utf-8,first-page';
+  let secondURL = 'data:text/html;charset=utf-8,second-page';
+  let thirdURL = 'data:text/html;charset=utf-8,third-page';
+  let page = Page({
+    contentURL: firstURL,
+    contentScript: '(function () {' +
+      'self.port.emit("load", document.location.href);' +
+      '  self.port.on("redirect", function (url) {' +
+      '   document.location.href = url;' +
+      '  })' +
+      '})();',
+    include: 'data:*'
+  });
+
+  page.port.on('load', function (url) {
+    if (url === firstURL) {
+      page.port.emit('redirect', secondURL);
+    } else if (url === secondURL) {
+      page.port.emit('redirect', thirdURL);
+    } else if (url === thirdURL) {
+      page.port.emit('redirect', 'about:mozilla');
+      assert.equal(url, thirdURL, 'Redirects work with accepted domains on include strings');
+      done();
+    } else {
+      assert.fail('Should not redirect to unauthorized domains');
+    }
+  });
+};
+
+exports.testRedirectWithContentURL = function (assert, done) {
+  let firstURL = 'data:text/html;charset=utf-8,first-page';
+  let secondURL = 'data:text/html;charset=utf-8,second-page';
+  let thirdURL = 'data:text/html;charset=utf-8,third-page';
+  let page = Page({
+    contentURL: firstURL,
+    contentScript: '(function () {' +
+      'self.port.emit("load", document.location.href);' +
+      '})();',
+    include: 'data:*'
+  });
+
+  page.port.on('load', function (url) {
+    if (url === firstURL) {
+      page.contentURL = secondURL;
+    } else if (url === secondURL) {
+      page.contentURL = thirdURL;
+    } else if (url === thirdURL) {
+      page.contentURL = 'about:mozilla';
+      assert.equal(url, thirdURL, 'Redirects work with accepted domains on include strings');
+      done();
+    } else {
+      assert.fail('Should not redirect to unauthorized domains');
+    }
+  });
+};
+
+
 exports.testMultipleDestroys = function(assert) {
   let page = Page();
   page.destroy();
@@ -325,12 +436,31 @@ exports.testContentScriptOptionsOption = function(assert, done) {
   });
 };
 
+exports.testMessageQueue = function (assert, done) {
+  let page = new Page({
+    contentScript: 'self.on("message", function (m) {' +
+      'self.postMessage(m);' +
+      '});',
+    contentURL: 'data:text/html;charset=utf-8,',
+  });
+  page.postMessage('ping');
+  page.on('message', function (m) {
+    assert.equal(m, 'ping', 'postMessage should queue messages');
+    done();
+  });
+};
+
 function isDestroyed(page) {
   try {
     page.postMessage("foo");
   }
-  catch (err if err.message == ERR_DESTROYED) {
-    return true;
+  catch (err) {
+    if (err.message == ERR_DESTROYED) {
+      return true;
+    }
+    else {
+      throw err;
+    }
   }
   return false;
 }

@@ -12,8 +12,14 @@ const { Panel } = require('sdk/panel');
 const { Widget } = require('sdk/widget');
 const { fromIterator: toArray } = require('sdk/util/array');
 
-let { LoaderWithHookedConsole } = require('sdk/test/loader');
-let { loader } = LoaderWithHookedConsole(module, function() {});
+let { Loader } = require('sdk/test/loader');
+let loader = Loader(module, {
+  console: Object.create(console, {
+    error: {
+      value: function(e) !/DEPRECATED:/.test(e) ? console.error(e) : undefined
+    }
+  })
+});
 const pb = loader.require('sdk/private-browsing');
 
 function makeEmptyBrowserWindow(options) {
@@ -64,7 +70,7 @@ exports.testShowPanelAndWidgetOnPrivateWindow = function(assert, done) {
                 }
               });
             }
-          }).show(window.gBrowser);
+          }).show(null, window.gBrowser);
         },
         onUntrack: function(window) {
           if (window === myPrivateWindow) {
@@ -132,13 +138,13 @@ exports.testWindowIteratorDoesNotIgnorePrivateWindows = function(assert, done) {
       assert.ok(windows(null, { includePrivate: true }).indexOf(window) > -1,
                 "window is in windows()");
 
-      close(window).then(function() {
+      return close(window).then(function() {
         pb.once('stop', function() {
           done();
         });
         pb.deactivate();
       });
-    });
+    }).then(null, assert.fail);
   });
   pb.activate();
 };

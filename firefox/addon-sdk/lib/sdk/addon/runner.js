@@ -1,8 +1,6 @@
-/* vim:set ts=2 sw=2 sts=2 expandtab */
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 module.metadata = {
   "stability": "experimental"
@@ -11,23 +9,33 @@ module.metadata = {
 const { Cc, Ci } = require('chrome');
 const { descriptor, Sandbox, evaluate, main, resolveURI } = require('toolkit/loader');
 const { once } = require('../system/events');
-const { exit, env, staticArgs, name } = require('../system');
+const { exit, env, staticArgs } = require('../system');
 const { when: unload } = require('../system/unload');
 const { loadReason } = require('../self');
 const { rootURI } = require("@loader/options");
 const globals = require('../system/globals');
+const xulApp = require('../system/xul-app');
+const appShellService = Cc['@mozilla.org/appshell/appShellService;1'].
+                        getService(Ci.nsIAppShellService);
 
 const NAME2TOPIC = {
   'Firefox': 'sessionstore-windows-restored',
   'Fennec': 'sessionstore-windows-restored',
   'SeaMonkey': 'sessionstore-windows-restored',
-  'Thunderbird': 'mail-startup-done',
-  '*': 'final-ui-startup'
+  'Thunderbird': 'mail-startup-done'
 };
+
+// Set 'final-ui-startup' as default topic for unknown applications
+let appStartup = 'final-ui-startup';
 
 // Gets the topic that fit best as application startup event, in according with
 // the current application (e.g. Firefox, Fennec, Thunderbird...)
-const APP_STARTUP = NAME2TOPIC[name] || NAME2TOPIC['*'];
+for (let name of Object.keys(NAME2TOPIC)) {
+  if (xulApp.is(name)) {
+    appStartup = NAME2TOPIC[name];
+    break;
+  }
+}
 
 // Initializes default preferences
 function setDefaultPrefs(prefsURI) {
@@ -64,18 +72,31 @@ function definePseudo(loader, id, exports) {
 }
 
 function wait(reason, options) {
-  once(APP_STARTUP, function() {
+  once(appStartup, function() {
     startup(null, options);
   });
 }
 
 function startup(reason, options) {
-  if (reason === 'startup')
+  // Try accessing hidden window to guess if we are running during firefox
+  // startup, so that we should wait for session restore event before
+  // running the addon
+  let initialized = false;
+  try {
+    appShellService.hiddenDOMWindow;
+    initialized = true;
+  }
+  catch(e) {}
+  if (reason === 'startup' || !initialized) {
     return wait(reason, options);
+  }
 
   // Inject globals ASAP in order to have console API working ASAP
   Object.defineProperties(options.loader.globals, descriptor(globals));
 
+  // NOTE: Module is intentionally required only now because it relies
+  // on existence of hidden window, which does not exists until startup.
+  let { ready } = require('../addon/window');
   // Load localization manifest and .properties files.
   // Run the addon even in case of error (best effort approach)
   require('../l10n/loader').
@@ -87,8 +108,11 @@ function startup(reason, options) {
       // Exports data to a pseudo module so that api-utils/l10n/core
       // can get access to it
       definePseudo(options.loader, '@l10n/data', data ? data : null);
+      return ready;
+    }).then(function() {
       run(options);
-    });
+    }).then(null, console.exception);
+    return void 0; // otherwise we raise a warning, see bug 910304
 }
 
 function run(options) {
@@ -116,7 +140,10 @@ function run(options) {
 
     // TODO: When bug 564675 is implemented this will no longer be needed
     // Always set the default prefs, because they disappear on restart
-    setDefaultPrefs(options.prefsURI);
+    if (options.prefsURI) {
+      // Only set if `prefsURI` specified
+      setDefaultPrefs(options.prefsURI);
+    }
 
     // this is where the addon's main.js finally run.
     let program = main(options.loader, options.main);
@@ -128,10 +155,10 @@ function run(options) {
 
       program.main({
         loadReason: loadReason,
-        staticArgs: staticArgs 
-      }, { 
+        staticArgs: staticArgs
+      }, {
         print: function print(_) { dump(_ + '\n') },
-        quit: exit 
+        quit: exit
       });
     }
   } catch (error) {

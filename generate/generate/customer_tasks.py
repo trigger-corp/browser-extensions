@@ -518,7 +518,7 @@ def wrap_activations(build, location):
 					filename = location+script[3:]
 					build.log.debug("wrapping activation {filename}".format(**locals()))
 					in_file_contents = read_file_as_str(filename)
-					in_file_contents = 'if (forge._disableFrames === undefined || window.location == window.parent.location) {\n'+in_file_contents+'\n}';
+					in_file_contents = '// firefox complains when the first line is an if statement\n' + 'if (forge._disableFrames === undefined || window.location == window.parent.location) {\n' + in_file_contents + '\n}';
 					with codecs.open(tmp_file, 'w', encoding='utf8') as out_file:
 						out_file.write(in_file_contents)
 					os.remove(filename)

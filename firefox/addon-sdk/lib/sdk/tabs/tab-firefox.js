@@ -1,4 +1,4 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
+ /*This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 'use strict';
@@ -6,13 +6,17 @@
 const { Trait } = require("../deprecated/traits");
 const { EventEmitter } = require("../deprecated/events");
 const { defer } = require("../lang/functional");
+const { has } = require("../util/array");
 const { EVENTS } = require("./events");
 const { getThumbnailURIForWindow } = require("../content/thumbnail");
 const { getFaviconURIForLocation } = require("../io/data");
 const { activateTab, getOwnerWindow, getBrowserForTab, getTabTitle, setTabTitle,
         getTabURL, setTabURL, getTabContentType, getTabId } = require('./utils');
 const { getOwnerWindow: getPBOwnerWindow } = require('../private-browsing/window/utils');
-const viewNS = require('sdk/core/namespace').ns();
+const viewNS = require('../core/namespace').ns();
+const { deprecateUsage } = require('../util/deprecate');
+const { getURL } = require('../url/utils');
+const { viewFor } = require('../view/core');
 
 // Array of the inner instances of all the wrapped tabs.
 const TABS = [];
@@ -33,6 +37,8 @@ const TabTrait = Trait.compose(EventEmitter, {
   window: null,
   constructor: function Tab(options) {
     this._onReady = this._onReady.bind(this);
+    this._onLoad = this._onLoad.bind(this);
+    this._onPageShow = this._onPageShow.bind(this);
     this._tab = options.tab;
     // TODO: Remove this dependency
     let window = this.window = options.window || require('../windows').BrowserWindow({ window: getOwnerWindow(this._tab) });
@@ -40,20 +46,29 @@ const TabTrait = Trait.compose(EventEmitter, {
     // Setting event listener if was passed.
     for each (let type in EVENTS) {
       let listener = options[type.listener];
-      if (listener)
+      if (listener) {
         this.on(type.name, options[type.listener]);
-      if ('ready' != type.name) // window spreads this event.
+      }
+      // window spreads this event.
+      if (!has(['ready', 'load', 'pageshow'], (type.name)))
         window.tabs.on(type.name, this._onEvent.bind(this, type.name));
     }
 
     this.on(EVENTS.close.name, this.destroy.bind(this));
+
     this._browser.addEventListener(EVENTS.ready.dom, this._onReady, true);
+    this._browser.addEventListener(EVENTS.load.dom, this._onLoad, true);
+    this._browser.addEventListener(EVENTS.pageshow.dom, this._onPageShow, true);
 
     if (options.isPinned)
       this.pin();
 
     viewNS(this._public).tab = this._tab;
     getPBOwnerWindow.implement(this._public, getChromeTab);
+    viewFor.implement(this._public, getTabView);
+
+    // Add tabs to getURL method
+    getURL.implement(this._public, (function (obj) this._public.url).bind(this));
 
     // Since we will have to identify tabs by a DOM elements facade function
     // is used as constructor that collects all the instances and makes sure
@@ -65,8 +80,11 @@ const TabTrait = Trait.compose(EventEmitter, {
     if (this._tab) {
       let browser = this._browser;
       // The tab may already be removed from DOM -or- not yet added
-      if (browser)
+      if (browser) {
         browser.removeEventListener(EVENTS.ready.dom, this._onReady, true);
+        browser.removeEventListener(EVENTS.load.dom, this._onLoad, true);
+        browser.removeEventListener(EVENTS.pageshow.dom, this._onPageShow, true);
+      }
       this._tab = null;
       TABS.splice(TABS.indexOf(this), 1);
     }
@@ -74,12 +92,34 @@ const TabTrait = Trait.compose(EventEmitter, {
 
   /**
    * Internal listener that emits public event 'ready' when the page of this
-   * tab is loaded.
+   * tab is loaded, from DOMContentLoaded
    */
   _onReady: function _onReady(event) {
     // IFrames events will bubble so we need to ignore those.
     if (event.target == this._contentDocument)
       this._emit(EVENTS.ready.name, this._public);
+  },
+
+  /**
+   * Internal listener that emits public event 'load' when the page of this
+   * tab is loaded, for triggering on non-HTML content, bug #671305
+   */
+  _onLoad: function _onLoad(event) {
+    // IFrames events will bubble so we need to ignore those.
+    if (event.target == this._contentDocument) {
+      this._emit(EVENTS.load.name, this._public);
+    }
+  },
+
+  /**
+   * Internal listener that emits public event 'pageshow' when the page of this
+   * tab is loaded from cache, bug #671305
+   */
+  _onPageShow: function _onPageShow(event) {
+    // IFrames events will bubble so we need to ignore those.
+    if (event.target == this._contentDocument) {
+      this._emit(EVENTS.pageshow.name, this._public, event.persisted);
+    }
   },
   /**
    * Internal tab event router. Window will emit tab related events for all it's
@@ -87,7 +127,7 @@ const TabTrait = Trait.compose(EventEmitter, {
    * listeners.
    */
   _onEvent: function _onEvent(type, tab) {
-    if (tab == this._public)
+    if (viewNS(tab).tab == this._tab)
       this._emit(type, tab);
   },
   /**
@@ -138,7 +178,13 @@ const TabTrait = Trait.compose(EventEmitter, {
    * URI of the favicon for the page currently loaded in this tab.
    * @type {String}
    */
-  get favicon() this._tab ? getFaviconURIForLocation(this.url) : undefined,
+  get favicon() {
+    deprecateUsage(
+      'tab.favicon is deprecated, ' +
+      'please use require("sdk/places/favicon").getFavicon instead.'
+    );
+    return this._tab ? getFaviconURIForLocation(this.url) : undefined
+  },
   /**
    * The CSS style for the tab
    */
@@ -204,8 +250,12 @@ const TabTrait = Trait.compose(EventEmitter, {
    * Close the tab
    */
   close: function close(callback) {
-    if (!this._tab)
+    // Bug 699450: the tab may already have been detached
+    if (!this._tab || !this._tab.parentNode) {
+      if (callback)
+        callback();
       return;
+    }
     if (callback)
       this.once(EVENTS.close.name, callback);
     this._window.gBrowser.removeTab(this._tab);
@@ -223,6 +273,10 @@ const TabTrait = Trait.compose(EventEmitter, {
 function getChromeTab(tab) {
   return getOwnerWindow(viewNS(tab).tab);
 }
+
+// Implement `viewFor` polymorphic function for the Tab
+// instances.
+const getTabView = tab => viewNS(tab).tab;
 
 function Tab(options, existingOnly) {
   let chromeTab = options.tab;

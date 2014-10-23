@@ -264,7 +264,7 @@ var apiImpl = {
 				error && error({
 					message: 'Request timed out',
 					type: 'EXPECTED_FAILURE'
-				});;
+				});
 			}, params.timeout ? params.timeout : 60000);
 		
 			var req = request.Request({
@@ -343,7 +343,7 @@ def get_ba_icon(ba):
 	button.addListener(function (options, tbb) {
 		if (options.url) {
 			// Create and destroy popups on demand (like Chrome)
-			var panel = require("forge-panel").Panel({
+			var panel = require("panel").Panel({
 				contentURL: options.url,
 				contentScriptFile: data.url("forge/api-firefox-proxy.js"),
 				contentScriptWhen: "start",

@@ -1,17 +1,14 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
 "use strict";
 
 module.metadata = {
   "stability": "experimental"
 };
 
-var obsvc = require("../deprecated/observer-service");
 var { exit, stdout } = require("../system");
 var cfxArgs = require("@test/options");
-var { Cc, Ci}  = require("chrome");
 
 function runTests(findAndRunTests) {
   var harness = require("./harness");
@@ -26,7 +23,8 @@ function runTests(findAndRunTests) {
         stdout.write("No tests were run\n");
       exit(0);
     } else {
-      printFailedTests(tests, cfxArgs.verbose, stdout.write);
+      if (cfxArgs.verbose || cfxArgs.parseable)
+        printFailedTests(tests, stdout.write);
       exit(1);
     }
   };
@@ -50,10 +48,7 @@ function runTests(findAndRunTests) {
   }, 0);
 }
 
-function printFailedTests(tests, verbose, print) {
-  if (!verbose)
-    return;
-
+function printFailedTests(tests, print) {
   let iterationNumber = 0;
   let singleIteration = tests.testRuns.length == 1;
   let padding = singleIteration ? "" : "  ";
@@ -64,7 +59,7 @@ function printFailedTests(tests, verbose, print) {
     iterationNumber++;
 
     if (!singleIteration)
-      print("  Iteration " + iterationNumber + ":\n"); 
+      print("  Iteration " + iterationNumber + ":\n");
 
     for each (let test in testRun) {
       if (test.failed > 0) {

@@ -2,7 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-"use strict";
+'use strict';
+
+module.metadata = {
+  'engines': {
+    'Firefox': '*'
+  }
+};
 
 const HTML = "<html>\
   <body>\
@@ -28,7 +34,7 @@ const { setTimeout } = require("sdk/timers");
 const { Cu } = require("chrome");
 const { merge } = require("sdk/util/object");
 const { isPrivate } = require("sdk/private-browsing");
-
+const events = require("sdk/system/events");
 // General purpose utility functions
 
 /**
@@ -50,15 +56,15 @@ function open(url, options) {
 
       let tab = getActiveTab(chromeWindow);
 
-      tab.addEventListener("load", function ready(event) {
-        let { document } = getTabContentWindow(this);
+      tab.linkedBrowser.addEventListener("load", function ready(event) {
+        let { document } = getTabContentWindow(tab);
 
         if (document.readyState === "complete" && document.URL === url) {
           this.removeEventListener(event.type, ready);
 
           resolve(document.defaultView);
         }
-      })
+      }, true);
 
       setTabURL(tab, url);
     });
@@ -159,13 +165,17 @@ function hideAndShowFrame(window) {
 
   iframe.style.display = "none";
 
-  Cu.forceGC();
+  Cu.schedulePreciseGC(function() {
+    events.on("document-shown", function shown(event) {
+      if (iframe.contentWindow !== event.subject.defaultView)
+        return;
 
-  setTimeout(function(){
+      events.off("document-shown", shown);
+      setTimeout(resolve, 0, window);
+    }, true);
+
     iframe.style.display = "";
-
-    setTimeout(resolve, 500, window);
-  }, 0)
+  });
 
   return promise;
 }
@@ -828,6 +838,8 @@ exports["test Selection Listener on frame"] = function(assert, done) {
 
   selection.once("select", function() {
     assert.equal(selection.text, "fo");
+    close();
+    loader.unload();
     done();
   });
 
@@ -836,8 +848,7 @@ exports["test Selection Listener on frame"] = function(assert, done) {
     then(getFrameWindow).
     then(selectContentFirstDiv).
     then(dispatchSelectionEvent).
-    then(close).
-    then(loader.unload, assert.fail);
+    then(null, assert.fail);
 };
 
 exports["test Textarea onSelect Listener on frame"] = function(assert, done) {
@@ -846,6 +857,8 @@ exports["test Textarea onSelect Listener on frame"] = function(assert, done) {
 
   selection.once("select", function() {
     assert.equal(selection.text, "noodles");
+    close();
+    loader.unload();
     done();
   });
 
@@ -854,8 +867,7 @@ exports["test Textarea onSelect Listener on frame"] = function(assert, done) {
     then(getFrameWindow).
     then(selectTextarea).
     then(dispatchOnSelectEvent).
-    then(close).
-    then(loader.unload, assert.fail);
+    then(null, assert.fail);
 };
 
 
@@ -980,23 +992,6 @@ if (!require("sdk/private-browsing/utils").isWindowPBSupported) {
       }
     }
   });
-}
-
-// If the module doesn't support the app we're being run in, require() will
-// throw.  In that case, remove all tests above from exports, and add one dummy
-// test that passes.
-try {
-  require("sdk/selection");
-}
-catch (err) {
-  if (!/^Unsupported Application/.test(err.message))
-    throw err;
-
-  module.exports = {
-    "test Unsupported Application": function Unsupported (assert) {
-      assert.pass(err.message);
-    }
-  }
 }
 
 require("test").run(exports)

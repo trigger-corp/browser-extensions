@@ -17,8 +17,12 @@ const { getOwnerWindow, getActiveTab, getTabs,
 const { Options } = require("../tabs/common");
 const { observer: tabsObserver } = require("../tabs/observer");
 const { ignoreWindow } = require("../private-browsing/utils");
+const { when: unload } = require('../system/unload');
 
 const TAB_BROWSER = "tabbrowser";
+
+let unloaded = false;
+unload(_ => unloaded = true);
 
 /**
  * This is a trait that is used in composition of window wrapper. Trait tracks
@@ -52,6 +56,8 @@ const WindowTabTracker = Trait.compose({
 
     // Binding all methods used as event listeners to the instance.
     this._onTabReady = this._emitEvent.bind(this, "ready");
+    this._onTabLoad = this._emitEvent.bind(this, "load");
+    this._onTabPageShow = this._emitEvent.bind(this, "pageshow");
     this._onTabOpen = this._onTabEvent.bind(this, "open");
     this._onTabClose = this._onTabEvent.bind(this, "close");
     this._onTabActivate = this._onTabEvent.bind(this, "activate");
@@ -109,17 +115,26 @@ const WindowTabTracker = Trait.compose({
         return;
 
       // Setting up an event listener for ready events.
-      if (type === "open")
+      if (type === "open") {
         wrappedTab.on("ready", this._onTabReady);
+        wrappedTab.on("load", this._onTabLoad);
+        wrappedTab.on("pageshow", this._onTabPageShow);
+      }
 
       this._emitEvent(type, wrappedTab);
     }
   },
-  _emitEvent: function _emitEvent(type, tab) {
+  _emitEvent: function _emitEvent(type, tag) {
+    if (unloaded)
+      return;
+
+    // Slices additional arguments and passes them into exposed
+    // listener like other events (for pageshow)
+    let args = Array.slice(arguments);
     // Notifies combined tab list that tab was added / removed.
-    tabs._emit(type, tab);
+    tabs._emit.apply(tabs, args);
     // Notifies contained tab list that window was added / removed.
-    this._tabs._emit(type, tab);
+    this._tabs._emit.apply(this._tabs, args);
   }
 });
 exports.WindowTabTracker = WindowTabTracker;
