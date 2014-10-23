@@ -12,9 +12,10 @@ const unload = require('../system/unload');
 const { isWindowPrivate } = require('../window/utils');
 const { EventTarget } = require('../event/target');
 const { getOwnerWindow: getPBOwnerWindow } = require('../private-browsing/window/utils');
+const { viewFor } = require('../view/core');
 const { deprecateUsage } = require('../util/deprecate');
 
-const ERR_FENNEC_MSG = 'This method is not yet supported by Fennec, consider using require("tabs") instead';
+const ERR_FENNEC_MSG = 'This method is not yet supported by Fennec, consider using require("sdk/tabs") instead';
 
 const BrowserWindow = Class({
   initialize: function initialize(options) {
@@ -41,13 +42,14 @@ const BrowserWindow = Class({
   get isPrivateBrowsing() {
     deprecateUsage('`browserWindow.isPrivateBrowsing` is deprecated, please ' +
                  'consider using ' +
-                 '`require("private-browsing").isPrivate(browserWindow)` ' +
+                 '`require("sdk/private-browsing").isPrivate(browserWindow)` ' +
                  'instead.');
     return isWindowPrivate(windowNS(this).window);
   }
 });
 exports.BrowserWindow = BrowserWindow;
 
-getPBOwnerWindow.define(BrowserWindow, function(window) {
-  return windowNS(window).window;
-});
+const getWindowView = window => windowNS(window).window;
+
+getPBOwnerWindow.define(BrowserWindow, getWindowView);
+viewFor.define(BrowserWindow, getWindowView);

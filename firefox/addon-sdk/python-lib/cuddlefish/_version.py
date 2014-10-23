@@ -9,8 +9,8 @@
 # (https://github.com/warner/python-versioneer)
 
 # these strings will be replaced by git during git-archive
-git_refnames = " (HEAD, 1.14rc2, 1.14, origin/stabilization, stabilization)"
-git_full = "39467a307f58b63c1907c8d383e48475c98b0624"
+git_refnames = " (HEAD, 1.17b1, 1.17, origin/firefox31, origin/1.17, 1.17)"
+git_full = "12f7d53e8b5fc015a15fa4a30fa588e81e9e9b2e"
 
 
 import subprocess

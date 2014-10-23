@@ -7,7 +7,8 @@ module.metadata = {
   "stability": "stable"
 };
 
-const { setMode, getMode, on: onStateChange } = require('./private-browsing/utils');
+const { Ci } = require('chrome');
+const { setMode, getMode, on: onStateChange, isPermanentPrivateBrowsing } = require('./private-browsing/utils');
 const { isWindowPrivate } = require('./window/utils');
 const { emit, on, once, off } = require('./event/core');
 const { when: unload } = require('./system/unload');
@@ -63,7 +64,17 @@ exports.isPrivate = function(thing) {
     let window = getOwnerWindow(thing);
     if (window)
       return isWindowPrivate(window);
+
+    try {
+      let { isChannelPrivate } = thing.QueryInterface(Ci.nsIPrivateBrowsingChannel);
+      if (isChannelPrivate)
+        return true;
+    } catch(e) {}
   }
+
+  // check if the post pwpb, global pb service is enabled.
+  if (isPermanentPrivateBrowsing())
+    return true;
 
   // if we get here, and global private browsing
   // is available, and it is true, then return
@@ -73,7 +84,8 @@ exports.isPrivate = function(thing) {
 
 function deprecateEvents(func) deprecateEvent(
   func,
-   'The require("private-browsing") module\'s "start" and "stop" events are deprecated.',
+   'The require("sdk/private-browsing") module\'s "start" and "stop" events ' +
+   'are deprecated.',
   ['start', 'stop']
 );
 

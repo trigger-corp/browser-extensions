@@ -1,4 +1,3 @@
-/* vim:set ts=2 sw=2 sts=2 et: */
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -20,6 +19,31 @@ const { isGlobalPBSupported } = require('../private-browsing/utils');
 
 // Bug 834961: ignore private windows when they are not supported
 function getWindows() windows(null, { includePrivate: isPrivateBrowsingSupported || isGlobalPBSupported });
+
+const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+// Define predicate functions that can be used to detech weather
+// we deal with fennec tabs or firefox tabs.
+
+// Predicate to detect whether tab is XUL "Tab" node.
+const isXULTab = tab =>
+  tab instanceof Ci.nsIDOMNode &&
+  tab.nodeName === "tab" &&
+  tab.namespaceURI === XUL_NS;
+exports.isXULTab = isXULTab;
+
+// Predicate to detecet whether given tab is a fettec tab.
+// Unfortunately we have to guess via duck typinng of:
+// http://mxr.mozilla.org/mozilla-central/source/mobile/android/chrome/content/browser.js#2583
+const isFennecTab = tab =>
+  tab &&
+  tab.QueryInterface &&
+  Ci.nsIBrowserTab &&
+  tab.QueryInterface(Ci.nsIBrowserTab) === tab;
+exports.isFennecTab = isFennecTab;
+
+const isTab = x => isXULTab(x) || isFennecTab(x);
+exports.isTab = isTab;
 
 function activateTab(tab, window) {
   let gBrowser = getTabBrowserForTab(tab);
@@ -133,13 +157,21 @@ exports.isTabOpen = isTabOpen;
 function closeTab(tab) {
   let gBrowser = getTabBrowserForTab(tab);
   // normal case?
-  if (gBrowser)
+  if (gBrowser) {
+    // Bug 699450: the tab may already have been detached
+    if (!tab.parentNode)
+      return;
     return gBrowser.removeTab(tab);
+  }
 
   let window = getWindowHoldingTab(tab);
   // fennec?
-  if (window && window.BrowserApp)
+  if (window && window.BrowserApp) {
+    // Bug 699450: the tab may already have been detached
+    if (!tab.browser)
+      return;
     return window.BrowserApp.closeTab(tab);
+  }
   return null;
 }
 exports.closeTab = closeTab;
@@ -167,12 +199,6 @@ function getBrowserForTab(tab) {
 }
 exports.getBrowserForTab = getBrowserForTab;
 
-
-function getContentWindowForTab(tab) {
-  return getBrowserForTab(tab).contentWindow;
-}
-exports.getContentWindowForTab = getContentWindowForTab;
-
 function getTabId(tab) {
   if (tab.browser) // fennec
     return tab.id
@@ -180,6 +206,11 @@ function getTabId(tab) {
   return String.split(tab.linkedPanel, 'panel').pop();
 }
 exports.getTabId = getTabId;
+
+function getTabForId(id) {
+  return getTabs().find(tab => getTabId(tab) === id) || null;
+}
+exports.getTabForId = getTabForId;
 
 function getTabTitle(tab) {
   return getBrowserForTab(tab).contentDocument.title || tab.label || "";
@@ -211,14 +242,20 @@ exports.getAllTabContentWindows = getAllTabContentWindows;
 function getTabForContentWindow(window) {
   // Retrieve the topmost frame container. It can be either <xul:browser>,
   // <xul:iframe/> or <html:iframe/>. But in our case, it should be xul:browser.
-  let browser = window.QueryInterface(Ci.nsIInterfaceRequestor)
-                   .getInterface(Ci.nsIWebNavigation)
-                   .QueryInterface(Ci.nsIDocShell)
-                   .chromeEventHandler;
+  let browser;
+  try {
+    browser = window.QueryInterface(Ci.nsIInterfaceRequestor)
+                    .getInterface(Ci.nsIWebNavigation)
+                    .QueryInterface(Ci.nsIDocShell)
+                    .chromeEventHandler;
+  } catch(e) {
+    // Bug 699450: The tab may already have been detached so that `window` is
+    // in a almost destroyed state and can't be queryinterfaced anymore.
+  }
 
   // Is null for toplevel documents
   if (!browser) {
-    return false;
+    return null;
   }
 
   // Retrieve the owner window, should be browser.xul one
@@ -257,7 +294,7 @@ function getTabForWindow(window) {
         return tab;
     }
   }
-  return null; 
+  return null;
 }
 
 function getTabURL(tab) {
@@ -308,3 +345,54 @@ function getTabForBrowser(browser) {
   return null;
 }
 exports.getTabForBrowser = getTabForBrowser;
+
+function pin(tab) {
+  let gBrowser = getTabBrowserForTab(tab);
+  // TODO: Implement Fennec support
+  if (gBrowser) gBrowser.pinTab(tab);
+}
+exports.pin = pin;
+
+function unpin(tab) {
+  let gBrowser = getTabBrowserForTab(tab);
+  // TODO: Implement Fennec support
+  if (gBrowser) gBrowser.unpinTab(tab);
+}
+exports.unpin = unpin;
+
+function isPinned(tab) !!tab.pinned
+exports.isPinned = isPinned;
+
+function reload(tab) {
+  let gBrowser = getTabBrowserForTab(tab);
+  // Firefox
+  if (gBrowser) gBrowser.unpinTab(tab);
+  // Fennec
+  else if (tab.browser) tab.browser.reload();
+}
+exports.reload = reload
+
+function getIndex(tab) {
+  let gBrowser = getTabBrowserForTab(tab);
+  // Firefox
+  if (gBrowser) {
+    let document = getBrowserForTab(tab).contentDocument;
+    return gBrowser.getBrowserIndexForDocument(document);
+  }
+  // Fennec
+  else {
+    let window = getWindowHoldingTab(tab)
+    let tabs = window.BrowserApp.tabs;
+    for (let i = tabs.length; i >= 0; i--)
+      if (tabs[i] === tab) return i;
+  }
+}
+exports.getIndex = getIndex;
+
+function move(tab, index) {
+  let gBrowser = getTabBrowserForTab(tab);
+  // Firefox
+  if (gBrowser) gBrowser.moveTabTo(tab, index);
+  // TODO: Implement fennec support
+}
+exports.move = move;

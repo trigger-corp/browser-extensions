@@ -5,8 +5,5 @@
 	"id": "PACKAGE_NAME_HERE",
 	"description": "DESCRIPTION_HERE",
 	"author": "AUTHOR_HERE",
-	"permissions": {
-		"unsafe-content-script": true
-	},
 	"homepage": ${json.dumps(value_of("homepage", ""))}
 }
