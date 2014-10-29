@@ -270,14 +270,14 @@ DWORD FrameServer::ProxyListen(LPVOID param)
 
     FrameServer* pThis = (FrameServer*)param;
 
-	wstring currentToolbar = boost::lexical_cast<wstring>(pThis->m_activeToolbar);
-
     pThis->m_channel = new Channel(L"IeBarListner", ::GetCurrentProcessId());
     while (pThis->m_channel) {
         char buffer[Channel::SECTION_SIZE];
         if (!pThis->m_channel->Read(buffer, Channel::SECTION_SIZE)) {
             break;
         }
+
+	    wstring currentToolbar = boost::lexical_cast<wstring>(pThis->m_activeToolbar);
 
         UINTX type = *(UINTX*)buffer;
         logger->debug(L"FrameServer::ProxyListen" 
@@ -330,7 +330,7 @@ DWORD FrameServer::ProxyListen(LPVOID param)
             button_addCommand *command = (button_addCommand*)buffer;
             hr = command->exec(pThis->m_toolbar, pThis->m_target, &button);
             if (FAILED(hr)) {
-                logger->error(L"FrameServer::ProxyListen button_setIconCommand failed"
+                logger->error(L"FrameServer::ProxyListen button_addCommand failed"
                               L" -> " + logger->parse(hr));
             }
             pThis->m_buttons[currentToolbar] = button;
@@ -339,12 +339,19 @@ DWORD FrameServer::ProxyListen(LPVOID param)
 
         case button_setIconCommand::COMMAND_TYPE: {
             button_setIconCommand *command = (button_setIconCommand*)buffer;
-            Button button = pThis->m_buttons[currentToolbar];
-            hr = command->exec(pThis->m_toolbar, pThis->m_target, 
-                               button.idCommand, button.iBitmap);
-            if (FAILED(hr)) {
-                logger->error(L"FrameServer::ProxyListen button_setIconCommand failed"
-                              L" -> " + logger->parse(hr));
+
+            Buttons::const_iterator findIter = pThis->m_buttons.find(currentToolbar);
+            if (findIter != pThis->m_buttons.end()) {
+                Button button = findIter->second;
+                hr = command->exec(pThis->m_toolbar, pThis->m_target, 
+                                   button.idCommand, button.iBitmap);
+                if (FAILED(hr)) {
+                    logger->error(L"FrameServer::ProxyListen button_setIconCommand failed"
+                                  L" -> " + logger->parse(hr));
+                }
+            }else{
+                logger->error(L"FrameServer::ProxyListen button_setIconCommand failed to locate"
+                              L" button for toolbar: " + currentToolbar);
             }
         }
             break;
