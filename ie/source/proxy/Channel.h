@@ -75,11 +75,11 @@ struct PostMessageCommand : public MessageCommand {
 struct TabCommand : public Command {
     DWORDX   processId;
     INT_PTRX proxy;
-	HWND toolbar;
+	HWNDX toolbar;
     TabCommand(UINTX type) : Command(type) { }
     TabCommand(UINTX type, DWORDX processId, INT_PTRX proxy) : 
         Command(type), processId(processId), proxy(proxy) { }
-	TabCommand(UINTX type, DWORDX processId, INT_PTRX proxy, HWND toolbar) : 
+	TabCommand(UINTX type, DWORDX processId, INT_PTRX proxy, HWNDX toolbar) : 
         Command(type), processId(processId), proxy(proxy), toolbar(toolbar) { }
     TabCommand(Channel* channel) { 
         channel->Read(&type, sizeof(TabCommand));
@@ -139,7 +139,7 @@ struct SelectTabCommand : public TabCommand {
     static const UINTX COMMAND_TYPE = 0x05;
     SelectTabCommand(DWORDX processId, INT_PTRX proxy) : 
         TabCommand(COMMAND_TYPE, processId, proxy) { }
-	SelectTabCommand(DWORDX processId, INT_PTRX proxy, HWND toolbar) : 
+	SelectTabCommand(DWORDX processId, INT_PTRX proxy, HWNDX toolbar) : 
         TabCommand(COMMAND_TYPE, processId, proxy, toolbar) { }
     SelectTabCommand(Channel* channel) : 
         TabCommand(channel) { }

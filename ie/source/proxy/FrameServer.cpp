@@ -320,7 +320,8 @@ DWORD FrameServer::ProxyListen(LPVOID param)
 
         case SelectTabCommand::COMMAND_TYPE: {
             SelectTabCommand *command = (SelectTabCommand*)buffer;
-			pThis->SetCurrentProxy(command->processId, command->proxy, command->toolbar);
+			pThis->SetCurrentProxy(command->processId, command->proxy,
+                    reinterpret_cast<HWND>(command->toolbar));
         }
             break;
 

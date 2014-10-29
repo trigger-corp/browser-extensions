@@ -228,7 +228,7 @@ void FrameProxy::SetCurrent()
     } 
       
     //logger->debug(L"FrameProxy::SetCurrent Write");
-    SelectTabCommand command(::GetCurrentProcessId(), (INT_PTRX)this, m_toolbar);
+    SelectTabCommand command(::GetCurrentProcessId(), (INT_PTRX)this, reinterpret_cast<HWNDX>(m_toolbar));
     m_commandChannel->Write(&command, sizeof(command));
     //logger->debug(L"FrameProxy::SetCurrent Write fin");
 }
