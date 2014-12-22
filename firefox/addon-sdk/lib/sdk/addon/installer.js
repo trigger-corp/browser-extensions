@@ -65,8 +65,12 @@ exports.install = function install(xpiPath) {
 
   // Order AddonManager to install the addon
   AddonManager.getInstallForFile(file, function(install) {
-    install.addListener(listener);
-    install.install();
+    if (install.error != null) {
+      install.addListener(listener);
+      install.install();
+    } else {
+      reject(install.error);
+    }
   });
 
   return promise;
@@ -87,20 +91,31 @@ exports.uninstall = function uninstall(addonId) {
   AddonManager.addAddonListener(listener);
 
   // Order Addonmanager to uninstall the addon
-  AddonManager.getAddonByID(addonId, function (addon) {
-    addon.uninstall();
-  });
+  getAddon(addonId).then(addon => addon.uninstall(), reject);
 
   return promise;
 };
 
 exports.disable = function disable(addonId) {
-  let { promise, resolve, reject } = defer();
-
-  AddonManager.getAddonByID(addonId, function (addon) {
+  return getAddon(addonId).then(addon => {
     addon.userDisabled = true;
-    resolve();
+    return addonId;
   });
-
-  return promise;
 };
+
+exports.enable = function enabled(addonId) {
+  return getAddon(addonId).then(addon => {
+    addon.userDisabled = false;
+    return addonId;
+  });
+};
+
+exports.isActive = function isActive(addonId) {
+  return getAddon(addonId).then(addon => addon.isActive && !addon.appDisabled);
+};
+
+function getAddon (id) {
+  let { promise, resolve, reject } = defer();
+  AddonManager.getAddonByID(id, addon => addon ? resolve(addon) : reject());
+  return promise;
+}

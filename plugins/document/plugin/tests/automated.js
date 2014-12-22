@@ -5,6 +5,8 @@ asyncTest("Check document.location", 1, function() {
 		var expect = {};
 		if (forge.is.chrome()) {
 			expect.protocol = "chrome-extension:";
+		} else if (forge.is.firefox()) {
+			expect.protocol = "resource:";
 		} else {
 			expect.protocol = "file:";
 		}

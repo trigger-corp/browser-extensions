@@ -5,7 +5,7 @@ if (window._testResultClient) {
 forge.tools.getURL("/index.html", function (url) {
 	forge.tabs.open(url);
 });
-forge.tabs.open('http://ops.trigger.io/75d92dce/tests/empty.html');
+forge.tabs.open('http://localhost/ops_webmynd_com/tests/empty.html');
 
 $(function () {
 	$('body').append('<h1 id="qunit-header">Forge Test Platform</h1>' +

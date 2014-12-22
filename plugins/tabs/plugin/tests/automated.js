@@ -18,7 +18,7 @@ Not sure how to test this
 
 asyncTest("openWithOptions - trusted remote", 1, function() {
 	forge.tabs.openWithOptions({
-		url: "http://ops.trigger.io/75d92dce/tests/trusted.html",
+		url: "http://localhost/ops_webmynd_com/tests/trusted.html",
 		pattern: "https://trigger.io/*"
 	}, function (ret) {
 		equal(ret.userCancelled, false);

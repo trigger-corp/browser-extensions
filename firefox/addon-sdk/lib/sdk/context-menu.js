@@ -4,22 +4,27 @@
 "use strict";
 
 module.metadata = {
-  "stability": "stable"
+  "stability": "stable",
+  "engines": {
+    // TODO Fennec support Bug 788334
+    "Firefox": "*"
+  }
 };
 
 const { Class, mix } = require("./core/heritage");
 const { addCollectionProperty } = require("./util/collection");
 const { ns } = require("./core/namespace");
 const { validateOptions, getTypeOf } = require("./deprecated/api-utils");
-const { URL } = require("./url");
+const { URL, isValidURI } = require("./url");
 const { WindowTracker, browserWindowIterator } = require("./deprecated/window-utils");
 const { isBrowser, getInnerId } = require("./window/utils");
 const { Ci } = require("chrome");
-const { MatchPattern } = require("./page-mod/match-pattern");
+const { MatchPattern } = require("./util/match-pattern");
 const { Worker } = require("./content/worker");
 const { EventTarget } = require("./event/target");
 const { emit } = require('./event/core');
 const { when } = require('./system/unload');
+const selection = require('./selection');
 
 // All user items we add have this class.
 const ITEM_CLASS = "addon-context-menu-item";
@@ -200,6 +205,66 @@ let URLContext = Class({
 });
 exports.URLContext = URLContext;
 
+// Matches when the user-supplied predicate returns true
+let PredicateContext = Class({
+  extends: Context,
+
+  initialize: function initialize(predicate) {
+    let options = validateOptions({ predicate: predicate }, {
+      predicate: {
+        is: ["function"],
+        msg: "predicate must be a function."
+      }
+    });
+    internal(this).predicate = options.predicate;
+  },
+
+  isCurrent: function isCurrent(popupNode) {
+    return internal(this).predicate(populateCallbackNodeData(popupNode));
+  }
+});
+exports.PredicateContext = PredicateContext;
+
+// List all editable types of inputs.  Or is it better to have a list
+// of non-editable inputs?
+let editableInputs = {
+  email: true,
+  number: true,
+  password: true,
+  search: true,
+  tel: true,
+  text: true,
+  textarea: true,
+  url: true
+};
+
+function populateCallbackNodeData(node) {
+  let window = node.ownerDocument.defaultView;
+  let data = {};
+
+  data.documentType = node.ownerDocument.contentType;
+
+  data.documentURL = node.ownerDocument.location.href;
+  data.targetName = node.nodeName.toLowerCase();
+  data.targetID = node.id || null ;
+
+  if ((data.targetName === 'input' && editableInputs[node.type]) ||
+      data.targetName === 'textarea') {
+    data.isEditable = !node.readOnly && !node.disabled;
+  }
+  else {
+    data.isEditable = node.isContentEditable;
+  }
+
+  data.selectionText = selection.text;
+  
+  data.srcURL = node.src || null;
+  data.linkURL = node.href || null;
+  data.value = node.value || null;
+
+  return data;
+}
+
 function removeItemFromArray(array, item) {
   return array.filter(function(i) i !== item);
 }
@@ -264,7 +329,13 @@ let labelledItemRules =  mix(baseItemRules, {
   },
   image: {
     map: stringOrNull,
-    is: ["string", "undefined", "null"]
+    is: ["string", "undefined", "null"],
+    ok: function (url) {
+      if (!url)
+        return true;
+      return isValidURI(url);
+    },
+    msg: "Image URL validation failed"
   }
 });
 
@@ -292,10 +363,12 @@ let menuRules = mix(labelledItemRules, {
   }
 });
 
-let ContextWorker = Worker.compose({
+let ContextWorker = Class({
+  implements: [ Worker ],
+
   //Returns true if any context listeners are defined in the worker's port.
   anyContextListeners: function anyContextListeners() {
-    return this._contentWorker.hasListenerFor("context");
+    return this.getSandbox().hasListenerFor("context");
   },
 
   // Calls the context workers context listeners and returns the first result
@@ -303,7 +376,7 @@ let ContextWorker = Worker.compose({
   // listeners returned false then returns false. If there are no listeners
   // then returns null.
   getMatchedContext: function getCurrentContexts(popupNode) {
-    let results = this._contentWorker.emitSync("context", popupNode);
+    let results = this.getSandbox().emitSync("context", popupNode);
     return results.reduce(function(val, result) val || result, null);
   },
 
@@ -311,7 +384,7 @@ let ContextWorker = Worker.compose({
   // context-clicked, and clickedItemData is the data of the item that was
   // clicked.
   fireClick: function fireClick(popupNode, clickedItemData) {
-    this._contentWorker.emitSync("click", popupNode, clickedItemData);
+    this.getSandbox().emitSync("click", popupNode, clickedItemData);
   }
 });
 
