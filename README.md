@@ -54,8 +54,13 @@ Dependencies
 Installation
 ------------
 
+### Clone Repo:
+
+    git clone https://github.com/trigger-corp/browser-extensions.git
+
 ### Create Python Environment:
 
+    cd browser-extensions
     virtualenv --no-site-packages ./python-env
 
 ### Activate Python Environment (Unix):
@@ -72,6 +77,7 @@ Installation
     pip install -r requirements.txt
     python setup.py develop
     cd ..
+
 
 
 Using OpenForge
@@ -103,6 +109,7 @@ Where `<platform>` is one of `chrome`, `safari`, `firefox` or `ie`
     forge-extension package <platform>
 
 Where `<platform>` is one of `chrome`, `safari`, `firefox` or `ie`
+
 
 
 Testing OpenForge
