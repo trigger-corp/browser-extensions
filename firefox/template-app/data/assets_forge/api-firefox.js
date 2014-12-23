@@ -1,6 +1,6 @@
 /*
  * api-firefox.js
- * 
+ *
  * Firefox specific overrides to the generic Forge api.js
  */
 
@@ -92,9 +92,9 @@ forge.message = {
 			callback = type;
 			type = null;
 		}
-		
+
 		var event = internal.background ? 'broadcastBackground' : 'broadcast';
-		
+
 		jetpackListen(event, function(message) {
 			if (type === null || type === message.type) {
 				callback(message.content, function(reply) {
@@ -161,7 +161,7 @@ forge.request.ajax = function(options) {
 		// Given "text/html" instead of ["text/html"].
 		accepts = [accepts];
 	}
-	
+
 	if (type == 'GET') {
 		url = internal.generateURI(url, data);
 		data = null;
@@ -169,7 +169,7 @@ forge.request.ajax = function(options) {
 	if (cache) {
 		cache = {};
 		cache['wm'+Math.random()] = Math.random();
-		url = internal.generateURI(url, cache); 
+		url = internal.generateURI(url, cache);
 	}
 	if (data) {
 		data = internal.generateQueryString(data);
@@ -177,7 +177,7 @@ forge.request.ajax = function(options) {
 			contentType = "application/x-www-form-urlencoded";
 		}
 	}
-	if (accepts) {
+	if (accepts && !headers['Accept']) {
 		headers['Accept'] = accepts.join(',');
 	}
 	if (contentType) {
