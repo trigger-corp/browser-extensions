@@ -70,6 +70,9 @@ def get_run_at(run_at):
 ${content_script(plugins['activations']['config']['activations'][0])}{% for activation in plugins['activations']['config']['activations'][1:] %},
 ${content_script(activation)}{% end for %}\
 	]{% end if %}{% if 'icons' in plugins and 'chrome' in plugins['icons']['config'] %},
+	"externally_connectable": {
+		"matches": ${json.dumps(plugins['externally_connectable']['config']['matches'])}
+	},
 	"icons": ${json.dumps(plugins['icons']['config']['chrome'])}{% end if icons.config.chrome in plugins %}{% if "button" in plugins and "config" in plugins["button"] %},
 	"browser_action": ${json.dumps(clean_browser_action(plugins['button']['config']))}{% end if %}{% end %}{% if "update_url" in plugins and "config" in plugins["update_url"] and "chrome" in plugins["update_url"]["config"] %},
 	"update_url": ${json.dumps(plugins["update_url"]["config"]["chrome"])} {% end defined('update_url') and "chrome" in update_url %},
