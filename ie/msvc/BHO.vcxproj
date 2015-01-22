@@ -121,6 +121,8 @@
     <TargetName>bho32</TargetName>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
     <GenerateManifest>true</GenerateManifest>
+    <IncludePath>C:\[D]\Projects\Grammarly\boost_1_57_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\[D]\Projects\Grammarly\boost_1_57_0\lib32-msvc-12.0;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\build\$(Platform)\$(Configuration)\</OutDir>
