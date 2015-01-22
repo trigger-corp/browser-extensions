@@ -7,6 +7,7 @@
 #include "NativeMessagingTypes.h"
 #include "AccessibleBrowser.h"
 #include "NotificationWindow.h"
+#include "wininet.h"
 
 
 /**
@@ -341,3 +342,42 @@ STDMETHODIMP CNativeExtensions::notification(BSTR icon, BSTR title, BSTR text,
     return S_OK;
 }
 
+STDMETHODIMP CNativeExtensions::cookies_get(BSTR url, BSTR name,
+    IDispatch *success, IDispatch *error)
+{
+    logger->debug(L"NativeExtensions::cookies_get "
+        L" -> " + wstring(url) +
+        L" -> " + wstring(name));
+
+
+    if (this->tabId == 0) {
+
+        TCHAR cookieData[10240] = { 0 };
+        DWORD dwSize = sizeof(cookieData);
+
+        bool ret = InternetGetCookieEx(W2T(url), W2T(name), cookieData, &dwSize, INTERNET_COOKIE_HTTPONLY, NULL);
+        if (ret) {
+            CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(wstring(name).c_str()));
+        }
+        else {
+            logger->error(L"NativeExtensions::cookies_get failed"
+                L" -> " + wstring(url) +
+                L" -> " + wstring(name));
+
+            wstring message = L"InternetGetCookieEx failed";
+            CComDispatchDriver(error).Invoke1((DISPID)0, &CComVariant(message.c_str()));
+        }
+
+
+    }
+    else {
+        logger->error(L"NativeExtensions::cookies_get failed"
+            L" -> " + wstring(url) +
+            L" -> " + wstring(name));
+
+        wstring message = L"get cookies only from background page";
+        CComDispatchDriver(error).Invoke1((DISPID)0, &CComVariant(message.c_str()));
+    }
+
+    return S_OK;
+}
