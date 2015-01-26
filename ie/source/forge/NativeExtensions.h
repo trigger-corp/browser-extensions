@@ -69,6 +69,8 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
                              BOOL *out_success);
     STDMETHOD(cookies_get)	(BSTR url, BSTR name,
                              IDispatch *success, IDispatch *error);
+    STDMETHOD(cookies_remove)	(BSTR url, BSTR name,
+                                 BOOL *out_success);
 
     STDMETHOD(set_tabId)    (UINT tabId) {
         this->tabId = tabId;

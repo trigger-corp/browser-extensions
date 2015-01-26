@@ -407,3 +407,16 @@ STDMETHODIMP CNativeExtensions::cookies_get(BSTR url, BSTR name,
 }
 
 
+
+STDMETHODIMP CNativeExtensions::cookies_remove(BSTR url, BSTR name, BOOL *out_success)
+{
+
+    logger->debug(L"NativeExtensions::cookies_remove "
+        L" -> " + wstring(url) +
+        L" -> " + wstring(name));
+
+    wstring newCookieData = wstring(name) + L"=; expires = Sat,01-Jan-2000 00:00:00 GMT";
+    *out_success = InternetSetCookie(W2T(url), NULL, newCookieData.c_str()) ? TRUE : FALSE;
+
+    return S_OK;
+}
