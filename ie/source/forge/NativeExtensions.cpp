@@ -415,8 +415,19 @@ STDMETHODIMP CNativeExtensions::cookies_remove(BSTR url, BSTR name, BOOL *out_su
         L" -> " + wstring(url) +
         L" -> " + wstring(name));
 
-    wstring newCookieData = wstring(name) + L"=; expires = Sat,01-Jan-2000 00:00:00 GMT";
-    *out_success = InternetSetCookie(W2T(url), NULL, newCookieData.c_str()) ? TRUE : FALSE;
+    if (this->tabId == 0)
+    {
+        wstring newCookieData = wstring(name) + L"=; expires = Sat,01-Jan-2000 00:00:00 GMT";
+        *out_success = InternetSetCookie(W2T(url), NULL, newCookieData.c_str()) ? TRUE : FALSE;
+    }
+    else 
+    {
+        logger->error(L"NativeExtensions::cookies_remove failed: tabId != 0"
+            L" -> " + wstring(url) +
+            L" -> " + wstring(name));
+
+        *out_success = FALSE;
+    }
 
     return S_OK;
 }
