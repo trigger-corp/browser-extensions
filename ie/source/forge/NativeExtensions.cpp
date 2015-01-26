@@ -352,17 +352,17 @@ STDMETHODIMP CNativeExtensions::cookies_get(BSTR url, BSTR name,
 
     if (this->tabId == 0) {
 
-        LPTSTR cookieData = NULL;   // buffer to hold the cookie data
+        LPTSTR cookieData = new TCHAR[0];   // buffer to hold the cookie data
         DWORD dwSize = 0;           // variable to get the buffer size needed
 
-        if (!InternetGetCookie(W2T(url), W2T(name), cookieData, &dwSize))
+        if (!InternetGetCookieEx(W2T(url), W2T(name), cookieData, &dwSize, 0, NULL))
         {
             if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
             {
                 // Allocate the necessary buffer.
                 cookieData = new TCHAR[dwSize];
                 // Try the call again.
-                if (InternetGetCookie(W2T(url), W2T(name), cookieData, &dwSize))
+                if (InternetGetCookieEx(W2T(url), W2T(name), cookieData, &dwSize, 0, NULL))
                 {
                     CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(wstring(cookieData).c_str()));
                     delete[] cookieData;
@@ -389,8 +389,17 @@ STDMETHODIMP CNativeExtensions::cookies_get(BSTR url, BSTR name,
         }
         else
         {
-            CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(wstring(cookieData).c_str()));
-            delete[] cookieData;
+            if (cookieData != NULL)
+            {
+                CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(wstring(cookieData).c_str()));
+                delete[] cookieData;
+            }
+            else
+            {
+                wstring empty = L"";
+                CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(empty.c_str()));
+            }
+            
         }
 
     }
