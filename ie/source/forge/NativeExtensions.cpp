@@ -352,22 +352,46 @@ STDMETHODIMP CNativeExtensions::cookies_get(BSTR url, BSTR name,
 
     if (this->tabId == 0) {
 
-        TCHAR cookieData[10240] = { 0 };
-        DWORD dwSize = sizeof(cookieData);
+        LPTSTR cookieData = NULL;   // buffer to hold the cookie data
+        DWORD dwSize = 0;           // variable to get the buffer size needed
 
-        bool ret = InternetGetCookieEx(W2T(url), W2T(name), cookieData, &dwSize, INTERNET_COOKIE_HTTPONLY, NULL);
-        if (ret) {
-            CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(wstring(name).c_str()));
+        if (!InternetGetCookie(W2T(url), W2T(name), cookieData, &dwSize))
+        {
+            if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+            {
+                // Allocate the necessary buffer.
+                cookieData = new TCHAR[dwSize];
+                // Try the call again.
+                if (InternetGetCookie(W2T(url), W2T(name), cookieData, &dwSize))
+                {
+                    CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(wstring(cookieData).c_str()));
+                    delete[] cookieData;
+                }
+                else
+                {
+                    logger->error(L"NativeExtensions::cookies_get failed"
+                        L" -> " + wstring(url) +
+                        L" -> " + wstring(name));
+
+                    wstring message = L"Error code: " + std::to_wstring(GetLastError());
+                    CComDispatchDriver(error).Invoke1((DISPID)0, &CComVariant(message.c_str()));
+                }
+            }
+            else
+            {
+                logger->error(L"NativeExtensions::cookies_get failed"
+                    L" -> " + wstring(url) +
+                    L" -> " + wstring(name));
+
+                wstring message = L"Error code: " + std::to_wstring(GetLastError());
+                CComDispatchDriver(error).Invoke1((DISPID)0, &CComVariant(message.c_str()));
+            }
         }
-        else {
-            logger->error(L"NativeExtensions::cookies_get failed"
-                L" -> " + wstring(url) +
-                L" -> " + wstring(name));
-
-            wstring message = L"InternetGetCookieEx failed";
-            CComDispatchDriver(error).Invoke1((DISPID)0, &CComVariant(message.c_str()));
+        else
+        {
+            CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(wstring(cookieData).c_str()));
+            delete[] cookieData;
         }
-
 
     }
     else {
@@ -381,3 +405,5 @@ STDMETHODIMP CNativeExtensions::cookies_get(BSTR url, BSTR name,
 
     return S_OK;
 }
+
+
