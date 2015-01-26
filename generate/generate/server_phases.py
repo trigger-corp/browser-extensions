@@ -88,7 +88,7 @@ def post_create_all_js():
 			'out': 'ie/forge/all.js'
 		}}},
 		{'when': {'platform_is': 'ie'}, 'do': {'concatenate_files': {
-			'in': ('common-v2/api-priv.js', 'ie/assets_forge/api-proxy.js', 'ie/assets_forge/api-priv-ie.js',),
+			'in': ('common-v2/cookies.js', 'common-v2/api-priv.js', 'ie/assets_forge/api-proxy.js', 'ie/assets_forge/api-priv-ie.js',),
 			'out': 'ie/forge/all-priv.js'
 		}}},
 		{'when': {'platform_is': 'firefox'}, 'do': {'add_to_all_js': 'firefox/template-app/data/assets_forge/api-firefox.js'}},
