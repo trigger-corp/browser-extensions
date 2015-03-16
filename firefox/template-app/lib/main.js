@@ -32,7 +32,7 @@ var attachWorker = function (worker) {
 	});
 	worker.on('message', handleNonPrivCall);
 }
-var handleNonPrivCall = function(msg) { 
+var handleNonPrivCall = function(msg) {
 	var self = this;
 	var handleResult = function (status) {
 		return function(content) {
@@ -62,11 +62,11 @@ var call = function(methodName, params, worker, success, error) {
 
 	if (!success) {
 		success = nullFn;
-	} 
+	}
 	if (!error) {
 		error = nullFn;
 	}
-	
+
 	try {
 		// descend into API with dot-separated names
 		var methodParts = methodName.split('.'),
@@ -80,7 +80,7 @@ var call = function(methodName, params, worker, success, error) {
 			// tried to call non-existent API method
 			error({message: methodName+' does not exist', type: "UNAVAILABLE"});
 		}
-		
+
 		method.call(worker, params, function() {
 			var strargs = "arguments could not be stringified";
 			try {
@@ -256,7 +256,7 @@ var apiImpl = {
 	},
 	request: {
 		ajax: function (params, success, error) {
-		
+
 			var complete = false;
 			var timer = require('timers').setTimeout(function () {
 				if (complete) return;
@@ -266,14 +266,14 @@ var apiImpl = {
 					type: 'EXPECTED_FAILURE'
 				});
 			}, params.timeout ? params.timeout : 60000);
-		
+
 			var req = request.Request({
 				url: params.url,
 				onComplete: function (res) {
 					require('timers').clearTimeout(timer);
 					if (complete) return;
 					complete = true;
-				
+
 					if (res.status >= 200 && res.status < 400) {
 						success(res.text)
 					} else {
@@ -286,11 +286,8 @@ var apiImpl = {
 				content: params.data,
 				headers: params.headers
 			});
-			if (params.type == 'POST') {
-				req.post();
-			} else {
-				req.get();
-			}
+
+			req[params.type ? params.type.toLowerCase() : 'get']();
 		}
 	},
 	prefs: {
@@ -352,7 +349,9 @@ def get_ba_icon(ba):
 					removeWorker(this);
 					// Completely remove panel from DOM
 					this.destroy();
-				}
+				},
+				width: 450,
+				height: 600
 			});
 			// Keep the panel in the list of workers for messaging
 			addWorker(panel);
@@ -368,7 +367,7 @@ def get_ba_icon(ba):
 		contentScriptWhen: "start",
 		onMessage: handleNonPrivCall
 	});
-	
+
 	// Convert between chrome match patterns and regular expressions
 	var patternToRe = function (str) {
 		if (str == '<all_urls>') {
@@ -405,10 +404,10 @@ def get_ba_icon(ba):
 		} else {
 			re += host;
 		}
-		
+
 		// Path
 		re += path.replace(/\*/g, '.*');
-		
+
 		return new RegExp(re);
 	}
 	var patternsToRe = function (arr) {
@@ -425,7 +424,7 @@ def get_ba_icon(ba):
 			return data.url(arr);
 		}
 	};
-	
+
 {% if "activations" in plugins and "config" in plugins["activations"] and "activations" in plugins["activations"]["config"] and len(plugins["activations"]["config"]["activations"]) %}{% for activation in plugins["activations"]["config"]["activations"] %}
 	pageMod.PageMod({
 		include: patternsToRe(${json.dumps(activation.patterns)}),
