@@ -25,7 +25,7 @@ var handleCallQueue = function () {
 			}
 			handlingQueue = false;
 		} else {
-			callQueueTimeout = setTimeout(handleCallQueue, 500);
+			callQueueTimeout = setTimeout(function () { handleCallQueue(); }, 500);
 		}
 	}
 };
@@ -70,7 +70,7 @@ internal.priv = {
 		} else {
 			callQueue.push(arguments);
 			if (!callQueueTimeout) {
-				callQueueTimeout = setTimeout(handleCallQueue, 500);
+				callQueueTimeout = setTimeout(function () { handleCallQueue(); }, 500);
 			}
 		}
 	},
