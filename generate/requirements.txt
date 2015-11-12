@@ -12,7 +12,7 @@ nose==1.1.2
 nosexcover==1.0.7
 requests==0.6.1
 simplejson==2.2.1
--e git+git://github.com/trigger-corp/validictory.git#egg=Validictory
+-e git+https://github.com/trigger-corp/validictory.git#egg=Validictory
 wsgiref==0.1.2
 PyHamcrest==1.6
 pystache==0.5.3
