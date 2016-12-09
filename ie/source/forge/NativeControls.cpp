@@ -168,8 +168,10 @@ STDMETHODIMP CNativeControls::unload(BSTR uuid, unsigned int instanceId)
  * @param uuid
  * @param isVisible
  */
-STDMETHODIMP CNativeControls::popup_visible(BSTR uuid, BOOL isVisible, POINT point)
+STDMETHODIMP CNativeControls::popup_visible(BSTR uuid, BOOL isVisible, LONG xpos, LONG ypos)
 {
+    POINT point; point.x = xpos, point.y = ypos;
+
     logger->debug(L"CNativeControls::popup_visible"
                   L" -> " + wstring(uuid) +
                   L" -> " + boost::lexical_cast<wstring>(isVisible) +
@@ -192,6 +194,11 @@ STDMETHODIMP CNativeControls::popup_visible(BSTR uuid, BOOL isVisible, POINT poi
         logger->debug(L"CNativeControls::popup_visible has no popup"
                       L" -> " + wstring(uuid));
         return E_FAIL;
+    }
+
+    if (!isVisible) {
+        popup->ShowWindow(SW_HIDE);
+        return S_OK;
     }
 
     // get screen metrics
@@ -379,14 +386,14 @@ STDMETHODIMP CNativeControls::button_onClicked(BSTR uuid, IDispatch *callback)
  *
  * @param uuid
  */
-STDMETHODIMP CNativeControls::button_click(BSTR uuid, POINT point)
+STDMETHODIMP CNativeControls::button_click(BSTR uuid, LONG xpos, LONG ypos)
 {
     HRESULT hr;
 
     logger->debug(L"CNativeControls::button_click"
                   L" -> " + wstring(uuid) +
-                  L" -> " + boost::lexical_cast<wstring>(point.x) +
-                  L" -> " + boost::lexical_cast<wstring>(point.y) +
+                  L" -> " + boost::lexical_cast<wstring>(xpos) +
+                  L" -> " + boost::lexical_cast<wstring>(ypos) +
                   L" -> " + boost::lexical_cast<wstring>(this->button_listeners.size()));
 
     Listener listener = button_listeners[uuid];
@@ -405,7 +412,7 @@ STDMETHODIMP CNativeControls::button_click(BSTR uuid, POINT point)
     logger->debug(L"CNativeControls::button_click no button listener"
                   L" -> " + wstring(uuid));
 
-    hr = this->popup_visible(uuid, true, point);
+    hr = this->popup_visible(uuid, true, xpos, ypos);
     if (FAILED(hr)) {
         logger->error(L"CNativeControls::button_click "
                       L"failed to activate popup"

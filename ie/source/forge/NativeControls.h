@@ -48,13 +48,13 @@ public:
     // INativeControls
     STDMETHOD(load)             (BSTR uuid, BSTR extensionPath, unsigned int instanceId, ULONG hwnd);
     STDMETHOD(unload)           (BSTR uuid, unsigned int instanceId);
-    STDMETHOD(popup_visible)    (BSTR uuid, BOOL isVisible, POINT point);
+    STDMETHOD(popup_visible)    (BSTR uuid, BOOL isVisible, LONG xpos, LONG ypos);
     STDMETHOD(button_setIcon)   (BSTR uuid, BSTR url, 
                                  IDispatch *success, IDispatch *error);
     STDMETHOD(button_setURL)    (BSTR uuid, BSTR url,
                                  IDispatch *success, IDispatch *error);
     STDMETHOD(button_onClicked) (BSTR uuid, IDispatch *callback);
-    STDMETHOD(button_click)     (BSTR uuid, POINT point);
+    STDMETHOD(button_click)     (BSTR uuid, LONG xpos, LONG ypos);
     STDMETHOD(button_setTitle)  (BSTR uuid, BSTR title,
                                  IDispatch *success, IDispatch *error);
     STDMETHOD(button_setBadge)  (BSTR uuid, INT number,

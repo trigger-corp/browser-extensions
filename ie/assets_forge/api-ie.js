@@ -15,6 +15,7 @@
 var window_extensions = window.extensions;
 var window_messaging = window.messaging;
 var window_accessible = window.accessible;
+var window_controls = window.controls;
 
 /**
  * debug logger
@@ -216,8 +217,19 @@ forge.tabs.open = function(url, selected, success, error) {
 	}
 
 	window_accessible.open(url, selected,
-						   typeof success === "function" ? success : function(){},
-						   typeof error   === "function" ? error   : function(){});
+		function() {
+			// HACK: If we weren't asked to keep the focus then hide the popup. Normally
+			// this should happen automatically by the new tab getting focus and
+			// PopupWindow::OnKillFocus hiding the popup but it seems to not always work.
+			if (!selected) {
+				window_controls.popup_visible(forge.config.uuid, false, 0, 0);
+			}
+
+			if (typeof success === "function") {
+				success();
+			}
+		},
+		typeof error === "function" ? error : function(){});
 };
 
 

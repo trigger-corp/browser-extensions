@@ -144,7 +144,8 @@ interface INativeControls : IDispatch {
                                        [in] unsigned int instanceId);
     [id(3)]  HRESULT popup_visible    ([in] BSTR  uuid, 
                                        [in] BOOL  isVisible,
-                                       [in] POINT point); // @ugly
+                                       [in] LONG xpos,
+                                       [in] LONG ypos);
     [id(4)]  HRESULT button_setIcon   ([in] BSTR uuid, 
                                        [in] BSTR url,
                                        [in] IDispatch *success, 
@@ -156,7 +157,8 @@ interface INativeControls : IDispatch {
     [id(6)]  HRESULT button_onClicked ([in] BSTR uuid, 
                                        [in] IDispatch *callback);
     [id(7)]  HRESULT button_click     ([in] BSTR uuid, 
-                                       [in] POINT point); // @ugly
+                                       [in] LONG xpos,
+                                       [in] LONG ypos);
     [id(8)]  HRESULT button_setTitle  ([in] BSTR uuid, 
                                        [in] BSTR title,
                                        [in] IDispatch *success, 
