@@ -126,6 +126,11 @@ var apiImpl = {
 	},
 	button: {
 		setIcon: function (url, success, error) {
+			// If schema not given, then assume local file; patch up url to be relative to data folder.
+			if (url.indexOf("://") < 0) {
+			    url = data.url(url);
+			}
+
 			if (button) {
 				button.update({
 					icon: url
