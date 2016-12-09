@@ -123,3 +123,11 @@ Testing OpenForge
 <!-- Link -->
    [intro-blog]: http://trigger.io/cross-platform-application-development-blog/2013/09/10/introducing-openforge-an-open-source-cross-platform-browser-add-on-framework/
    [docs]: http://legacy-docs.trigger.io/en/v1.4/modules/browser/index.html
+
+Changing C++ libraries
+---------------------
+### Windows
+
+* Boost: Download and install boost_1_57_0-msvc-12.0-32.exe from http://sourceforge.net/projects/boost/files/boost-binaries/1.57.0/
+* Open .\ie\msvc\ForgeIE.sln
+* For every project in solution add include dir(e.g. C:\Cpp\boost_1_57_0) and library dir(e.g. C:\Cpp\boost_1_57_0\lib32-msvc-12.0)

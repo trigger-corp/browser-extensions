@@ -590,6 +590,16 @@ var apiImpl = {
                 success(url);
             }
         }
+    },
+    cookies: {
+        get: function (params, success, error) {
+            window.extensions.cookie_get("http://grammarly.com", params.name,
+                typeof success === "function" ? success : function () { },
+                typeof error === "function" ? error : function () { });
+        },
+        remove: function (params) {
+            return window.extensions.cookies_remove("http://grammarly.com", params.name);
+        }
     }
 }
 

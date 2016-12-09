@@ -26,6 +26,7 @@ def minify_in_place(source_dir, *filenames):
 			log.debug('minification via http service failed')
 			raise Exception('Minification via http service failed')
 	except:
+		return
 		jar = path.join(source_dir, 'generate', 'lib', 'minify-all.jar')
 		minify_args = ['java', '-jar', jar, '--charset', 'utf-8'] + list(filenames)
 		log.debug('Running minification: "%s"' % ((' ').join(minify_args)))

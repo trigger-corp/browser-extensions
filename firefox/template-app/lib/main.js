@@ -433,21 +433,15 @@ def get_ba_icon(ba):
 		{% end %} {% if not activation.has_key("all_frames") or activation["all_frames"] is False %}
 			contentScriptFile: strArrToDataUrl(${json.dumps(["forge/app_config.js", "forge/all.js", "forge/disable-frames.js"] + activation.scripts)}),
 		{% end %}
+		{% if activation.has_key("styles") %}
+		contentStyleFile: strArrToDataUrl(${json.dumps(activation.styles)}),
+		{% end %}
 		{% if activation.has_key("run_at") %}
 			contentScriptWhen: ${json.dumps(activation.run_at)},
 		{% end %} {% if not activation.has_key("run_at") %}
 			contentScriptWhen: 'end',
 		{% end %}
-		onAttach: function (worker) {
-			attachWorker(worker);
-			{% if activation.has_key("styles") %}
-			var files = ${json.dumps(activation.styles)}
-			for (var i in files) {
-				files[i] = data.load(files[i]);
-			}
-			worker.postMessage({type: "css", files: files});
-			{% end %}
-		}
+		onAttach: attachWorker
 	});
 {% end %}{% end %}
 

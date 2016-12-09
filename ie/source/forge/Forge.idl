@@ -66,6 +66,11 @@ interface INativeExtensions : IDispatch {
     [id(11)] HRESULT get_tabId    ([out,retval] UINT *out_tabId);
     [id(12)] HRESULT set_location ([in] BSTR location);
     [id(13)] HRESULT get_location ([out,retval] BSTR *out_location);
+    [id(14)] HRESULT cookies_get  ([in] BSTR url, [in] BSTR name,
+                                   [in] IDispatch *success, [in] IDispatch *error);
+    [id(15)] HRESULT cookies_remove ([in] BSTR url, [in] BSTR name,
+                                     [out, retval] BOOL *out_success);
+
 };
 
 

@@ -1,4 +1,5 @@
 #pragma once
+#pragma comment( lib, "WinInet.lib")
 #include "resource.h"      
 #include <generated/Forge_i.h>
 #include "_INativeExtensionsEvents_CP.h"
@@ -66,6 +67,11 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
                              IDispatch *success, IDispatch *error);
     STDMETHOD(notification) (BSTR icon, BSTR title, BSTR text,
                              BOOL *out_success);
+    STDMETHOD(cookies_get)	(BSTR url, BSTR name,
+                             IDispatch *success, IDispatch *error);
+    STDMETHOD(cookies_remove)	(BSTR url, BSTR name,
+                                 BOOL *out_success);
+
     STDMETHOD(set_tabId)    (UINT tabId) {
         this->tabId = tabId;
         return S_OK;

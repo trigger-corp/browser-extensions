@@ -7,6 +7,7 @@
 #include "NativeMessagingTypes.h"
 #include "AccessibleBrowser.h"
 #include "NotificationWindow.h"
+#include "wininet.h"
 
 
 /**
@@ -341,3 +342,101 @@ STDMETHODIMP CNativeExtensions::notification(BSTR icon, BSTR title, BSTR text,
     return S_OK;
 }
 
+STDMETHODIMP CNativeExtensions::cookies_get(BSTR url, BSTR name,
+    IDispatch *success, IDispatch *error)
+{
+    logger->debug(L"NativeExtensions::cookies_get "
+        L" -> " + wstring(url) +
+        L" -> " + wstring(name));
+
+
+    if (this->tabId == 0) {
+
+        LPTSTR cookieData = new TCHAR[0];   // buffer to hold the cookie data
+        DWORD dwSize = 0;           // variable to get the buffer size needed
+
+        if (!InternetGetCookieEx(W2T(url), W2T(name), cookieData, &dwSize, 0, NULL))
+        {
+            if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+            {
+                // Allocate the necessary buffer.
+                cookieData = new TCHAR[dwSize];
+                // Try the call again.
+                if (InternetGetCookieEx(W2T(url), W2T(name), cookieData, &dwSize, 0, NULL))
+                {
+                    CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(wstring(cookieData).c_str()));
+                    delete[] cookieData;
+                }
+                else
+                {
+                    logger->error(L"NativeExtensions::cookies_get failed"
+                        L" -> " + wstring(url) +
+                        L" -> " + wstring(name));
+
+                    wstring message = L"Error code: " + std::to_wstring(GetLastError());
+                    CComDispatchDriver(error).Invoke1((DISPID)0, &CComVariant(message.c_str()));
+                }
+            }
+            else
+            {
+                logger->error(L"NativeExtensions::cookies_get failed"
+                    L" -> " + wstring(url) +
+                    L" -> " + wstring(name));
+
+                wstring message = L"Error code: " + std::to_wstring(GetLastError());
+                CComDispatchDriver(error).Invoke1((DISPID)0, &CComVariant(message.c_str()));
+            }
+        }
+        else
+        {
+            if (cookieData != NULL)
+            {
+                CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(wstring(cookieData).c_str()));
+                delete[] cookieData;
+            }
+            else
+            {
+                wstring empty = L"";
+                CComDispatchDriver(success).Invoke1((DISPID)0, &CComVariant(empty.c_str()));
+            }
+            
+        }
+
+    }
+    else {
+        logger->error(L"NativeExtensions::cookies_get failed"
+            L" -> " + wstring(url) +
+            L" -> " + wstring(name));
+
+        wstring message = L"get cookies only from background page";
+        CComDispatchDriver(error).Invoke1((DISPID)0, &CComVariant(message.c_str()));
+    }
+
+    return S_OK;
+}
+
+
+
+STDMETHODIMP CNativeExtensions::cookies_remove(BSTR url, BSTR name, BOOL *out_success)
+{
+
+    logger->debug(L"NativeExtensions::cookies_remove "
+        L" -> " + wstring(url) +
+        L" -> " + wstring(name));
+
+    if (this->tabId == 0)
+    {
+        wstring newCookieData = wstring(name) + L"=; expires = Sat,01-Jan-2000 00:00:00 GMT";
+        *out_success = InternetSetCookie(W2T(url), NULL, newCookieData.c_str()) ? TRUE : FALSE;
+    }
+    else 
+    {
+        logger->error(L"NativeExtensions::cookies_remove failed: tabId != 0"
+            L" -> " + wstring(url) +
+            L" -> " + wstring(name));
+
+        *out_success = FALSE;
+    }
+
+    return S_OK;
+}
