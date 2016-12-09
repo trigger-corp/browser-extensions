@@ -35,3 +35,4 @@ trigger-gen
 **/*.sdf
 **/*.opensdf
 **/ipch
+generate/src/
