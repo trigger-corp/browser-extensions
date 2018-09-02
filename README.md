@@ -112,6 +112,13 @@ Where `<platform>` is one of `chrome`, `safari`, `firefox` or `ie`
 
 
 
+Examples
+--------
+### IE Plugin with Background and Content Scripts:
+https://github.com/rei-colina-experiments/ie-browser-extension-demo Includes setup instructions and an explanation of how background and content scripts work.
+
+
+
 Testing OpenForge
 -----------------
 
