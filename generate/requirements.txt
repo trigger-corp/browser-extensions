@@ -3,7 +3,7 @@ Jinja2==2.6
 Pygments==1.4
 Sphinx==1.0.8
 argparse==1.1
-biplist==0.5
+biplist==0.6
 chardet==1.0.1
 coverage==3.5.1
 docutils==0.8.1
