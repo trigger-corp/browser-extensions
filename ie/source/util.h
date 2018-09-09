@@ -136,4 +136,10 @@ static HRESULT GET_MSIE_VERSION(int *major, int *minor)
      return S_OK;
 }
 
+#define BreakOnFailed(res) if (FAILED((res))) { break; }
+#define BreakOnFailedWithErrorLog(res, message) if (FAILED((res))) { logger->debug((message)); break; }
+
+#define BreakOnNull(ptr, res) if (!(ptr)) { (res) = E_POINTER; break; }
+#define BreakOnNullWithErrorLog(ptr, message) if(!(ptr)) { logger->error((message)); break; }
+
 #endif /* __UTIL_H__ */

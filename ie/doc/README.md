@@ -16,3 +16,12 @@ In order to make changes to, and build the Internet Explorer plugin's dll's i.e:
 
 ## Opening the Visual Studio Project
 - Open [browser-extensions/ie/msvc/BHO.vcxproj](https://github.com/reicolina/browser-extensions/blob/master/ie/msvc/BHO.vcxproj) in Visual Studio 2012.
+
+## Debugging on Windows
+- Build solution ForgeIE in debug configuration.
+- Install your plugin/extension.
+- Replace installed dll's and exe files by ones from Debug directories.
+- Also place correspondent pdb files to have ability to interact with source while debugging.
+- Modify BHO project setting Debugging->Command to C:\Program Files %28x86%29\Internet Explorer\iexplore.exe
+- Select Win32 configuration.
+- Press F5.
