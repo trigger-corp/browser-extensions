@@ -61,7 +61,7 @@ CBrowserHelperObject::CBrowserHelperObject()
 	  m_isAttached(false),
       m_nativeAccessible(),
       m_frameProxy(NULL),
-      m_nPageCounter(0),
+      m_isPageNavigation(false),
       m_nObjCounter(0),
       m_bIsRefresh(false)
 {
@@ -435,7 +435,7 @@ void __stdcall CBrowserHelperObject::OnDocumentComplete(IDispatch *dispatch,
                                                         VARIANT   *url)
 {
 
-	--m_nPageCounter;
+	m_isPageNavigation = false;
 
     Manifest::pointer manifest = _AtlModule.moduleManifest;
 
@@ -733,8 +733,8 @@ void __stdcall CBrowserHelperObject::OnWindowStateChanged(DWORD flags, DWORD mas
 */
 void __stdcall CBrowserHelperObject::OnBeforeNavigate2(IDispatch *idispatch, VARIANT *url, VARIANT *Flags, VARIANT *TargetFrameName, VARIANT *PostData, VARIANT *Headers, VARIANT_BOOL* Cancel)
 {
-  // add page counter so we can compare in DownloadBegin function
-  ++m_nPageCounter;
+  // add page flag so we can compare in DownloadBegin function
+  m_isPageNavigation = true;
 
   LPDISPATCH lpWBDisp = nullptr;
   HRESULT hr = S_OK;
@@ -761,7 +761,7 @@ void __stdcall CBrowserHelperObject::OnBeforeNavigate2(IDispatch *idispatch, VAR
 */
 void __stdcall CBrowserHelperObject::OnDownloadBegin()
 {
-  if (m_nPageCounter == 0)
+  if (!m_isPageNavigation)
     m_bIsRefresh = true;
   
   ++m_nObjCounter;

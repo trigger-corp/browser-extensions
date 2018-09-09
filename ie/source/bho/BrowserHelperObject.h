@@ -101,7 +101,7 @@ END_SINK_MAP()
     bool m_isConnected;
 	bool m_isAttached;
 
-    int m_nPageCounter;
+    bool m_isPageNavigation;
     int m_nObjCounter;
     bool m_bIsRefresh;
     wstring m_strUrl;
