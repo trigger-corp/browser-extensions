@@ -44,11 +44,18 @@ BEGIN_SINK_MAP(CBrowserHelperObject)
     SINK_ENTRY_INFO(0, DIID_DWebBrowserEvents2, DISPID_NAVIGATECOMPLETE2,  OnNavigateComplete2, &OnNavigateComplete2Info)
     SINK_ENTRY_INFO(0, DIID_DWebBrowserEvents2, DISPID_DOCUMENTCOMPLETE,   OnDocumentComplete, &OnDocumentCompleteInfo)
     SINK_ENTRY_INFO(0, DIID_DWebBrowserEvents2, DISPID_WINDOWSTATECHANGED, OnWindowStateChanged, &OnWindowStateChangedInfo)
+    SINK_ENTRY_INFO(0, DIID_DWebBrowserEvents2, DISPID_BEFORENAVIGATE2, OnBeforeNavigate2, &OnBeforeNavigate2Info)
+    SINK_ENTRY_INFO(0, DIID_DWebBrowserEvents2, DISPID_DOWNLOADBEGIN, OnDownloadBegin, &OnDownloadBeginInfo)
+    SINK_ENTRY_INFO(0, DIID_DWebBrowserEvents2, DISPID_DOWNLOADCOMPLETE, OnDownloadComplete, &OnDownloadCompleteInfo)
 END_SINK_MAP()
 
     static _ATL_FUNC_INFO OnNavigateComplete2Info;
     static _ATL_FUNC_INFO OnDocumentCompleteInfo;
     static _ATL_FUNC_INFO OnWindowStateChangedInfo;
+
+    static _ATL_FUNC_INFO OnBeforeNavigate2Info;
+    static _ATL_FUNC_INFO OnDownloadBeginInfo;
+    static _ATL_FUNC_INFO OnDownloadCompleteInfo;
 
  public:
     // IObjectWithSite
@@ -69,6 +76,13 @@ END_SINK_MAP()
 										   const wstring& location,
 										   const wstring& eventsource);
 
+    void __stdcall OnBeforeNavigate2(IDispatch *idispatch, VARIANT *url, VARIANT *Flags, 
+                                     VARIANT *TargetFrameName, VARIANT *PostData, 
+                                     VARIANT *Headers, VARIANT_BOOL* Cancel);
+
+    void __stdcall OnDownloadBegin();
+    void __stdcall OnDownloadComplete();
+
  private:
     HRESULT OnConnect(IUnknown *iunknown);
     HRESULT OnDisconnect(IUnknown *iunknown);
@@ -86,6 +100,13 @@ END_SINK_MAP()
     unsigned int m_instanceId;
     bool m_isConnected;
 	bool m_isAttached;
+
+    bool m_isPageNavigation;
+    int m_nObjCounter;
+    bool m_bIsRefresh;
+    wstring m_strUrl;
+
+    void OnRefresh();
     
     // used to filter secondary requests
     CComPtr<IWebBrowser2> m_webBrowser2;
