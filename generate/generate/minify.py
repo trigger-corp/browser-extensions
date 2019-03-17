@@ -26,11 +26,12 @@ def minify_in_place(source_dir, *filenames):
 			log.debug('minification via http service failed')
 			raise Exception('Minification via http service failed')
 	except:
-		jar = path.join(source_dir, 'generate', 'lib', 'minify-all.jar')
-		minify_args = ['java', '-jar', jar, '--charset', 'utf-8'] + list(filenames)
-		log.debug('Running minification: "%s"' % ((' ').join(minify_args)))
-		proc = Popen(minify_args, stdout=PIPE, stderr=PIPE)
-		proc_err = proc.communicate()[1]
-		if proc.returncode != 0:
-			raise Exception('Minification failed: %s' % (proc_err))
-		log.debug('minification successful: %s' % (proc_err))
+		jar = path.join(source_dir, 'generate', 'lib', 'yuicompressor-2.4.8.jar')
+		for filename in filenames:
+			minify_args = ['java', '-jar', jar, '--charset', 'utf-8', filename, '-o', filename]
+			log.debug('Running minification: "%s"' % ((' ').join(minify_args)))
+			proc = Popen(minify_args, stdout=PIPE, stderr=PIPE)
+			proc_err = proc.communicate()[1]
+			if proc.returncode != 0:
+				raise Exception('Minification failed: %s' % (proc_err))
+		log.debug('minification successful')
